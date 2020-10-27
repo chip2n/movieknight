@@ -1,0 +1,28 @@
+[package]
+name = "movieknight"
+version = "0.1.0"
+authors = ["Andreas Arvidsson <andreas.arvidson@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = { git = "https://github.com/SergioBenitez/Rocket" }
+dotenv = "0.15.0"
+anyhow = "1.0.33"
+
+[build-dependencies.dotenv]
+dotenv = "0.15.0"
+
+[build-dependencies.tokio]
+version = "0.2.22"
+
+[build-dependencies.sqlx]
+version = "0.4.0-beta.1"
+default-features = false
+features = [ "runtime-tokio", "macros", "postgres" ]
+
+[dependencies.sqlx]
+version = "0.4.0-beta.1"
+default-features = false
+features = [ "runtime-tokio", "macros", "postgres" ]

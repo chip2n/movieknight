@@ -1,0 +1,30 @@
+* MovieKnight
+
+Web app for planning movie nights.
+
+** Frontend
+Install necessary dependencies:
+
+#+begin_src bash
+cd frontend
+yarn
+#+end_src
+
+To start hacking, connect Emacs with =M-x cider-connect-cljs= (select =shadow=).
+
+** Backend
+
+Install the database if not already installed (on Arch Linux):
+
+#+begin_src bash :buffer
+sudo -iu postgres
+initdb --locale=en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data
+systemctl start postgresql.service
+systemctl enable postgresql.service
+#+end_src
+
+Create the database:
+
+#+begin_src bash :buffer
+createdb movieknight
+#+end_src
