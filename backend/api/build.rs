@@ -17,6 +17,6 @@ fn main() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(async { init_db().await })
+        .block_on(init_db())
         .unwrap();
 }

@@ -783,6 +783,9 @@ dependencies = [
  "anyhow",
  "movieknight-db",
  "rocket",
+ "rocket_contrib",
+ "serde",
+ "serde_json",
  "sqlx",
  "tokio",
 ]
@@ -1184,6 +1187,18 @@ dependencies = [
  "indexmap",
  "quote",
  "rocket_http",
+]
+
+[[package]]
+name = "rocket_contrib"
+version = "0.5.0-dev"
+source = "git+https://github.com/SergioBenitez/Rocket#edc91f65b77dde09e85605c1ff4c1418a3254257"
+dependencies = [
+ "log",
+ "rocket",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
