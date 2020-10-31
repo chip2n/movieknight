@@ -1,4 +1,7 @@
 use sqlx::postgres::PgDone;
+use sqlx::postgres::PgPoolOptions;
+use sqlx::PgPool;
+use std::env;
 use sqlx::Executor;
 use sqlx::Postgres;
 
@@ -26,6 +29,57 @@ pub struct Vote {
     pub id: i32,
     pub user_id: i32,
     pub movie_id: i32,
+}
+
+pub async fn init() -> anyhow::Result<PgPool> {
+    dotenv::dotenv()?;
+    let db_url = env::var("DATABASE_URL").expect("Environment variable DATABASE_URL is not set");
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect(&db_url)
+        .await?;
+
+    Ok(pool)
+}
+
+pub async fn create_movie_table(pool: &PgPool) -> SqlResult<PgDone> {
+    sqlx::query!(
+        "
+CREATE TABLE IF NOT EXISTS movie (
+  id BIGSERIAL PRIMARY KEY,
+  title VARCHAR,
+  synopsis VARCHAR,
+  image_url VARCHAR
+)
+",
+    )
+    .execute(pool)
+    .await
+}
+
+pub async fn create_account_table(pool: &PgPool) -> SqlResult<PgDone> {
+    sqlx::query!(
+        "
+CREATE TABLE IF NOT EXISTS account (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR
+)
+",
+    )
+    .execute(pool)
+    .await
+}
+
+pub async fn drop_account_table(pool: &PgPool) -> SqlResult<PgDone> {
+    sqlx::query!("DROP TABLE IF EXISTS account")
+        .execute(pool)
+        .await
+}
+
+pub async fn drop_movie_table(pool: &PgPool) -> SqlResult<PgDone> {
+    sqlx::query!("DROP TABLE IF EXISTS movie")
+        .execute(pool)
+        .await
 }
 
 pub async fn create_account<'c, E>(pool: E, name: &str) -> SqlResult<PgDone>

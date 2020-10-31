@@ -290,9 +290,9 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
 name = "figment"
-version = "0.9.4"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b13e2d266426f89e45fc544117ade84fad2a58ff676f34cc34e123fe4391b856"
+checksum = "0eede085e552099a1058b158c0a41d8024ea4d5772d465049657d7d2b053e471"
 dependencies = [
  "pear",
  "serde",
@@ -656,9 +656,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.80"
+version = "0.2.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4d58d1b70b004888f764dfbf6a26a3b0342a1632d33968e4a179d8011c760614"
+checksum = "2448f6066e80e3bfc792e9c98bf705b4b0fc6e8ef5b43e5889aff0eaa9c58743"
 
 [[package]]
 name = "linked-hash-map"
@@ -724,9 +724,9 @@ dependencies = [
 
 [[package]]
 name = "memchr"
-version = "2.3.4"
+version = "2.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
+checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
 name = "mime"
@@ -777,23 +777,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "movieknight-api"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "movieknight-db",
- "rocket",
- "sqlx",
- "tokio",
-]
-
-[[package]]
-name = "movieknight-db"
+name = "movieknight"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "dotenv",
+ "rocket",
  "sqlx",
+ "tokio",
 ]
 
 [[package]]
@@ -827,9 +818,9 @@ dependencies = [
 
 [[package]]
 name = "num-traits"
-version = "0.2.14"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a64b1ec5cda2586e284722486d802acf1f7dbdc623e2bfc57e65ca1cd099290"
+checksum = "ac267bcc07f48ee5f8935ab0d24f316fb722d7a1292e2913f0cc196b29ffd611"
 dependencies = [
  "autocfg",
 ]
@@ -1010,9 +1001,9 @@ checksum = "c36fa947111f5c62a733b652544dd0016a43ce89619538a8ef92724a6f501a20"
 
 [[package]]
 name = "proc-macro-hack"
-version = "0.5.19"
+version = "0.5.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
+checksum = "99c605b9a0adc77b7211c6b1f722dcb613d68d66859a44f3d485a6da332b0598"
 
 [[package]]
 name = "proc-macro-nested"
@@ -1100,18 +1091,18 @@ checksum = "41cc0f7e4d5d4544e8861606a285bb08d3e70712ccc7d2b84d7c0ccfaf4b05ce"
 
 [[package]]
 name = "ref-cast"
-version = "1.0.3"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e17626b2f4bcf35b84bf379072a66e28cfe5c3c6ae58b38e4914bb8891dabece"
+checksum = "745c1787167ddae5569661d5ffb8b25ae5fedbf46717eaa92d652221cec72623"
 dependencies = [
  "ref-cast-impl",
 ]
 
 [[package]]
 name = "ref-cast-impl"
-version = "1.0.3"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c523ccaed8ac4b0288948849a350b37d3035827413c458b6a40ddb614bb4f72"
+checksum = "7d21b475ab879ef0e315ad99067fa25778c3b0377f57f1b00207448dac1a3144"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1148,7 +1139,7 @@ dependencies = [
 [[package]]
 name = "rocket"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#edc91f65b77dde09e85605c1ff4c1418a3254257"
+source = "git+https://github.com/SergioBenitez/Rocket#0c150c2a0ef07a94108e272dd545d40f0fe31c22"
 dependencies = [
  "async-trait",
  "atomic",
@@ -1177,7 +1168,7 @@ dependencies = [
 [[package]]
 name = "rocket_codegen"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#edc91f65b77dde09e85605c1ff4c1418a3254257"
+source = "git+https://github.com/SergioBenitez/Rocket#0c150c2a0ef07a94108e272dd545d40f0fe31c22"
 dependencies = [
  "devise",
  "glob",
@@ -1189,7 +1180,7 @@ dependencies = [
 [[package]]
 name = "rocket_http"
 version = "0.5.0-dev"
-source = "git+https://github.com/SergioBenitez/Rocket#edc91f65b77dde09e85605c1ff4c1418a3254257"
+source = "git+https://github.com/SergioBenitez/Rocket#0c150c2a0ef07a94108e272dd545d40f0fe31c22"
 dependencies = [
  "cookie",
  "either",
@@ -1481,9 +1472,9 @@ dependencies = [
 
 [[package]]
 name = "state"
-version = "0.4.2"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3015a7d0a5fd5105c91c3710d42f9ccf0abfb287d62206484dcc67f9569a6483"
+checksum = "7345c971d1ef21ffdbd103a75990a15eb03604fc8b8852ca8cb418ee1a099028"
 
 [[package]]
 name = "stdweb"

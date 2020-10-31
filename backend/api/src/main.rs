@@ -1,14 +1,10 @@
-mod db;
-
 #[macro_use]
 extern crate rocket;
+use movieknight_db as db;
 use rocket::http::Header;
 use rocket::response::status::NotFound;
 use rocket::State;
-use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
-use std::env;
-
 
 #[derive(Responder)]
 #[response(status = 200)]
@@ -43,23 +39,40 @@ async fn votes(pool: State<'_, PgPool>) -> Result<MyResponder, NotFound<&str>> {
     }
 }
 
-async fn init_db() -> anyhow::Result<PgPool> {
-    dotenv::dotenv()?;
-    let db_url = env::var("DATABASE_URL").expect("Environment variable DATABASE_URL is not set");
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&db_url)
-        .await?;
-
-    db::create_account(&pool, "Andreas Arvidsson").await?;
-
-    Ok(pool)
-}
-
 #[launch]
 async fn rocket() -> rocket::Rocket {
-    let pool = init_db().await.expect("Unable to initialize database");
+    let pool = db::init().await.expect("Unable to initialize database");
+    db::create_account(&pool, "Andreas Arvidsson")
+        .await
+        .unwrap();
     rocket::ignite()
         .manage(pool)
         .mount("/", routes![index, votes])
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rocket::http::Status;
+    use rocket::local::blocking::Client;
+
+    fn init_client() -> Client {
+        let rocket = tokio::runtime::Builder::new()
+            .basic_scheduler()
+            .enable_all()
+            .build()
+            .unwrap()
+            .block_on(async { rocket().await });
+
+        Client::tracked(rocket).expect("valid rocket instance")
+    }
+
+    #[test]
+    fn test_api() {
+        let client = init_client();
+        let req = client.get("/");
+        let response = req.dispatch();
+
+        assert_eq!(response.status(), Status::Ok);
+    }
 }

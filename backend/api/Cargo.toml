@@ -1,0 +1,23 @@
+[package]
+name = "movieknight-api"
+version = "0.1.0"
+authors = ["Andreas Arvidsson <andreas.arvidson@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+movieknight-db = { path = "../db" }
+rocket = { git = "https://github.com/SergioBenitez/Rocket" }
+anyhow = "1.0.33"
+
+[dependencies.sqlx]
+version = "0.4.0-beta.1"
+default-features = false
+features = [ "runtime-tokio", "macros", "postgres" ]
+
+[build-dependencies]
+movieknight-db = { path = "../db" }
+anyhow = "1.0.33"
+tokio = "0.2.22"
+
+[dev-dependencies]
+tokio = "0.2.22"

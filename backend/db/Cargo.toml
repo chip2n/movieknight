@@ -1,0 +1,14 @@
+[package]
+name = "movieknight-db"
+version = "0.1.0"
+authors = ["Andreas Arvidsson <andreas.arvidson@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+dotenv = "0.15.0"
+anyhow = "1.0.33"
+
+[dependencies.sqlx]
+version = "0.4.0-beta.1"
+default-features = false
+features = [ "runtime-tokio", "macros", "postgres" ]
