@@ -1,9 +1,10 @@
+pub mod migrations;
+pub mod test;
+
 use sqlx::postgres::PgDone;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+use sqlx::{Executor, PgPool, Postgres};
 use std::env;
-use sqlx::Executor;
-use sqlx::Postgres;
+use std::panic;
 
 pub type SqlResult<T> = Result<T, sqlx::Error>;
 
@@ -34,15 +35,22 @@ pub struct Vote {
 pub async fn init() -> anyhow::Result<PgPool> {
     dotenv::dotenv()?;
     let db_url = env::var("DATABASE_URL").expect("Environment variable DATABASE_URL is not set");
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&db_url)
-        .await?;
-
+    let pool = init_pool(&db_url, 5).await?;
     Ok(pool)
 }
 
-pub async fn create_movie_table(pool: &PgPool) -> SqlResult<PgDone> {
+pub async fn init_pool(db_url: &str, max_connections: u32) -> anyhow::Result<PgPool> {
+    let pool = sqlx::postgres::PgPoolOptions::new()
+        .max_connections(max_connections)
+        .connect(&db_url)
+        .await?;
+    Ok(pool)
+}
+
+pub async fn create_movie_table<'c, E>(pool: E) -> SqlResult<PgDone>
+where
+    E: PgExecutor<'c>,
+{
     sqlx::query!(
         "
 CREATE TABLE IF NOT EXISTS movie (
@@ -57,7 +65,10 @@ CREATE TABLE IF NOT EXISTS movie (
     .await
 }
 
-pub async fn create_account_table(pool: &PgPool) -> SqlResult<PgDone> {
+pub async fn create_account_table<'c, E>(pool: E) -> SqlResult<PgDone>
+where
+    E: PgExecutor<'c>,
+{
     sqlx::query!(
         "
 CREATE TABLE IF NOT EXISTS account (
@@ -70,13 +81,19 @@ CREATE TABLE IF NOT EXISTS account (
     .await
 }
 
-pub async fn drop_account_table(pool: &PgPool) -> SqlResult<PgDone> {
+pub async fn drop_account_table<'c, E>(pool: E) -> SqlResult<PgDone>
+where
+    E: PgExecutor<'c>,
+{
     sqlx::query!("DROP TABLE IF EXISTS account")
         .execute(pool)
         .await
 }
 
-pub async fn drop_movie_table(pool: &PgPool) -> SqlResult<PgDone> {
+pub async fn drop_movie_table<'c, E>(pool: E) -> SqlResult<PgDone>
+where
+    E: PgExecutor<'c>,
+{
     sqlx::query!("DROP TABLE IF EXISTS movie")
         .execute(pool)
         .await

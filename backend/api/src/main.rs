@@ -1,3 +1,5 @@
+#![feature(async_closure)]
+
 #[macro_use]
 extern crate rocket;
 use movieknight_db as db;
@@ -88,43 +90,70 @@ async fn movies(pool: State<'_, PgPool>) -> GetMoviesResponder {
     GetMoviesResponder::new(movies)
 }
 
-#[launch]
-async fn rocket() -> rocket::Rocket {
-    let pool = db::init().await.expect("Unable to initialize database");
-    db::create_account(&pool, "Andreas Arvidsson")
-        .await
-        .unwrap();
+async fn launch_server(pool: PgPool) -> rocket::Rocket {
     rocket::ignite()
         .manage(pool)
         .mount("/", routes![index, votes, movies])
+}
+
+#[launch]
+async fn rocket() -> rocket::Rocket {
+    let pool = db::init().await.expect("Unable to initialize database");
+    launch_server(pool).await
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use rocket::http::Status;
-    use rocket::local::blocking::Client;
+    use rocket::local::asynchronous::Client;
 
-    fn init_client() -> Client {
-        let rocket = tokio::runtime::Builder::new()
-            .basic_scheduler()
-            .enable_all()
-            .build()
-            .unwrap()
-            .block_on(rocket());
-
-        Client::tracked(rocket).expect("valid rocket instance")
+    async fn init_client(pool: PgPool) -> anyhow::Result<Client> {
+        let rocket = launch_server(pool).await;
+        let client = Client::tracked(rocket).await?;
+        Ok(client)
     }
 
     #[test]
-    fn test_get_movies() {
-        let client = init_client();
-        let response = client.get("/movies").dispatch();
+    fn test_get_movies_empty() {
+        db::test::asynchronous(async move |db_url| {
+            let pool = db::init_pool(&db_url, 1).await?;
+            let client = init_client(pool).await?;
+            let response = client.get("/movies").dispatch().await;
 
-        assert_eq!(response.status(), Status::Ok);
+            assert_eq!(response.status(), Status::Ok);
 
-        let body = response.into_string().unwrap();
-        let movies: Vec<Movie> = serde_json::from_str(&body).unwrap();
-        assert!(movies.is_empty());
+            let body = response.into_string().await.unwrap();
+            let movies: Vec<Movie> = serde_json::from_str(&body)?;
+            assert!(movies.is_empty());
+            Ok(())
+        });
+    }
+
+    #[test]
+    fn test_get_movies_nonempty() {
+        db::test::asynchronous(async move |db_url| {
+            let pool = db::init_pool(&db_url, 1).await?;
+            db::insert_movie(
+                &pool,
+                &db::Movie {
+                    id: 0,
+                    title: "Hello".to_string(),
+                    synopsis: "Blah".to_string(),
+                    image_url: "http://example.com".to_string(),
+                },
+            )
+            .await?;
+
+            let client = init_client(pool).await?;
+            let response = client.get("/movies").dispatch().await;
+
+            assert_eq!(response.status(), Status::Ok);
+
+            let body = response.into_string().await.unwrap();
+            let movies: Vec<Movie> = serde_json::from_str(&body)?;
+            assert!(movies.len() == 1);
+            Ok(())
+        });
     }
 }

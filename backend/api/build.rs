@@ -6,8 +6,7 @@ async fn init_db() -> Result<(), anyhow::Error> {
         .unwrap();
     db::drop_account_table(&pool).await?;
     db::drop_movie_table(&pool).await?;
-    db::create_account_table(&pool).await?;
-    db::create_movie_table(&pool).await?;
+    db::migrations::run(&pool).await?;
     Ok(())
 }
 
