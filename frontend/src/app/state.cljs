@@ -1,7 +1,7 @@
 (ns app.state
   (:require [reagent.core :as r]))
 
-(def state
+(defonce state
   (r/atom
    {:users [{:id "andreas" :name "Andreas Arvidsson"}
             {:id "henning" :name "Henning Phan"}
@@ -17,7 +17,7 @@
             {:id "vote2" :status :loading :label "Fate/Zero"}
             {:id "vote3" :status :loading :label "One Piece"}
             {:id "vote4" :status :loading :label "Naruto Shippuden"}]
-    :search-results nil}))
+    :search-results []}))
 
 (defn set-search-results [results]
   (swap! state assoc :search-results results))

@@ -9,8 +9,8 @@
 (defn handle-search-request [request]
   (println "Searching for" (:query request))
   (go
-    (let [result (api/search (:query request))]
-      state/set-search-results result)))
+    (let [result (<! (api/search (:query request)))]
+      (state/set-search-results result))))
 
 (defonce search-handler
   (go-loop []
