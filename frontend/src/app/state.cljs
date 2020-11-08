@@ -20,4 +20,5 @@
     :search-results []}))
 
 (defn set-search-results [results]
-  (swap! state assoc :search-results results))
+  (swap! state assoc :search-results results)
+  nil)

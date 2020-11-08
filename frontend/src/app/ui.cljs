@@ -8,9 +8,9 @@
             ["@material-ui/lab/Autocomplete" :default Autocomplete]
             ["@material-ui/core/TextField" :default TextField]
             [cljs-http.client :as http]
-            [cljs.core.async :refer [chan pipeline]]))
+            [cljs.core.async :as async]))
 
-(defonce event-chan (chan))
+(defonce event-chan (async/chan))
 
 (defn movie-watch-question [{:keys [title image-url]}]
   (let [width 300]
@@ -36,6 +36,11 @@
                                        (set! (.-size params) "small")
                                        (set! (.-label params) "Search")
                                        (r/create-element TextField params))
+                       :on-input-change (fn [ev] (->> ev
+                                                     .-target
+                                                     .-value
+                                                     (assoc {:type :search} :query)
+                                                     (async/put! event-chan)))
                        :options search-results}])
    [:table
     {:style {:border-spacing 16}}
