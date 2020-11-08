@@ -1,43 +1,16 @@
 (ns app.main
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [reagent.core :as r]
-            [reagent.dom :as dom]
-            [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]]))
+  (:require [app.state :as state]
+            [app.api :as api]
+            [app.ui :as ui]
+            [app.search :as search]
+            [cljs.core.async :as async :refer [pipeline]]))
 
-(defn do-request []
-  (go (let [response (<! (http/get "http://localhost:8000"
-                                   {:with-credentials? false
-                                    :accept "application/json"}))]
-        (prn (:body response)))))
-
-(defn movie-watch-question [{:keys [title image-url]}]
-  (let [width 300]
-    [:div {:style {:width width}}
-     [:p "Do you want to watch"]
-     [:p title]
-     [:img {:src image-url
-            :width width}]
-   
-     [:div {:style {:display :flex
-                    :justify-content :space-between}}
-      [:button "No"]
-      [:div]
-      [:button "Ye"]]]))
-
-(defn root-component []
-  [movie-watch-question
-   {:title "Shigatsu wa Kimi no Uso"
-    :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}])
-
-(defn render-app []
-  (dom/render
-   [root-component]
-   (.getElementById js/document "root")))
+(defonce search-pipeline
+  (pipeline 1 search/request-chan (filter (comp #(= :search %) :type)) ui/event-chan))
 
 (defn main! []
   (println "[main]: reloaded")
-  (render-app))
+  (ui/render-app))
 
 (defn ^:dev/after-load reload! []
-  (render-app))
+  (ui/render-app))
