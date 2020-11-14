@@ -32,9 +32,10 @@
    
      [:div {:style {:display :flex
                     :justify-content :space-between}}
-      [:button "No"]
+      [:button {:on-click (fn [] (async/put! event-chan {:type :vote :answer false}))}
+       "No"]
       [:div]
-      [:button {:on-click (fn [] (println "hello"))}
+      [:button {:on-click (fn [] (async/put! event-chan {:type :vote :answer true}))}
        "Ye"]]]))
 
 (defn movie-vote-box []
