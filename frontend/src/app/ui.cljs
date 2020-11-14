@@ -46,7 +46,7 @@
     {:style {:border-spacing 16}}
     (let [user-votes (:user-votes @state/state)
           users (:users @state/state)
-          votes (:votes @state/state)]
+          movies (:movies @state/state)]
       [:tbody
        [:tr
         [:td]
@@ -58,15 +58,15 @@
              (map first n)
              (clojure.string/join n))])]
 
-       (for [vote votes]
-         ^{:key (:id vote)}
+       (for [movie movies]
+         ^{:key (:id movie)}
          [:tr
           [:td
            {:style {:width 200}}
-           (:label vote)]
+           (:title movie)]
           (for [user users]
-            (let [user-vote (get (get user-votes (:id user)) (:id vote))]
-              ^{:key (str (:id user) "-" (:id vote))}
+            (let [user-vote (get (get user-votes (:id user)) (:id movie))]
+              ^{:key (str (:id user) "-" (:id movie))}
               [:td
                {:style {:height 32
                         :width 32
