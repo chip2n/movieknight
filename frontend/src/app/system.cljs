@@ -1,6 +1,5 @@
 (ns app.system
-  (:require-macros [app.system]
-                   [cljs.core.async.macros :refer [go]])
+  (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [clojure.core.async :as async]
             [app.utils :as utils]))
 

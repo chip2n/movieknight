@@ -18,10 +18,6 @@
       (let [result (<! (api/search query))]
         (state/set-search-results result)))))
 
-;; (defcomponent search-component
-;;   {:input (utils/debounce request-chan 500)
-;;    :handler handle-search-request})
-
 (defn make-search-component []
   (system/make-component
    :name "search-component"
