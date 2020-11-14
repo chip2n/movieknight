@@ -1,4 +1,5 @@
 (ns app.main
+  (:require-macros [app.macros :refer [pipe-events]])
   (:require [app.state :as state]
             [app.api :as api]
             [app.search :as search]
@@ -7,8 +8,7 @@
             [app.utils :as utils]
             [cljs.core.async :as async :refer [pipeline]]))
 
-(defonce search-pipeline
-  (pipeline 1 search/request-chan (filter (comp #(= :search %) :type)) ui/event-chan))
+(pipe-events :search search/request-chan)
 
 (defn main! []
   (println "[main]: reloaded")

@@ -23,4 +23,3 @@
    :name "search-component"
    :input-ch (utils/debounce request-chan 500)
    :handler handle-search-request))
-
