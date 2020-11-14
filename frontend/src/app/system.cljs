@@ -6,30 +6,36 @@
 
 (defonce system (atom nil))
 
-(defn make-system! [components]
-  (fn stop! []
-    (println "[system] stopping")
-    (doseq [component components]
-      (component))))
+(defn make-system [components]
+  {:start (fn start! []
+            (println "[system] starting")
+            (doseq [component components]
+              ((:start component))))
+   :stop (fn stop! []
+           (println "[system] stopping")
+           (doseq [component components]
+             ((:stop component))))})
 
 (defn make-component [& {:keys [name input-ch handler]}]
-  (println (str "[" name "] starting"))
   (let [exit-ch (async/chan)]
-    (async/go-loop []
-      (let [[v ch] (async/alts! [exit-ch input-ch])]
-        (when (not (= ch exit-ch))
-          (do
-            (handler v)
-            (recur)))))
-    (fn stop! []
-      (println (str "[" name "] stopping"))
-      (async/put! exit-ch :stop))))
+    {:start (fn start! []
+              (println (str "[" name "] starting"))
+              (async/go-loop []
+                (let [[v ch] (async/alts! [exit-ch input-ch])]
+                  (when (not (= ch exit-ch))
+                    (do
+                      (handler v)
+                      (recur))))))
+     :stop (fn stop! []
+             (println (str "[" name "] stopping"))
+             (async/put! exit-ch :stop))}))
 
 (defn stop! []
-  (when-let [stop-system! @system]
-    (stop-system!)))
+  (when-let [s @system]
+    ((:stop s))))
 
 (defn start! [components]
   (stop!)
-  (println "[system] starting")
-  (reset! system (make-system! components)))
+  (let [s (make-system components)]
+    (reset! system s)
+    ((:start s))))
