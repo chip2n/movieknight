@@ -1,8 +1,10 @@
 (ns app.search
   (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs.core.async :refer [chan <! go-loop]]
+  (:require [cljs.core.async :as async :refer [chan <! go-loop]]
             [app.api :as api]
-            [app.state :as state]))
+            [app.state :as state]
+            [app.system :as system]
+            [app.utils :as utils]))
 
 (defonce request-chan (chan))
 
@@ -16,7 +18,13 @@
       (let [result (<! (api/search query))]
         (state/set-search-results result)))))
 
-(defonce search-handler
-  (go-loop []
-    (handle-search-request (<! request-chan))
-    (recur)))
+;; (defcomponent search-component
+;;   {:input (utils/debounce request-chan 500)
+;;    :handler handle-search-request})
+
+(defn make-search-component []
+  (system/make-component
+   :name "search-component"
+   :input-ch (utils/debounce request-chan 500)
+   :handler handle-search-request))
+
