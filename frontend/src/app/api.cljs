@@ -7,7 +7,7 @@
   (go (let [response (<! (http/get "http://localhost:8000"
                                    {:with-credentials? false
                                     :accept "application/json"}))]
-        (prn (:body response)))))
+        (:body response))))
 
 (defn search [query]
   (go (<! (timeout 2000))

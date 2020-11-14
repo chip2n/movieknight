@@ -8,7 +8,7 @@
 
 (defn handle-search-request [{:keys [query]}]
   (if (<= (count query) 2)
-    (prn
+    (do
      (println "Clearing search results")
      (state/set-search-results []))
     (go
