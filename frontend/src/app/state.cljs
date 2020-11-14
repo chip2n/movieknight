@@ -9,32 +9,32 @@
             {:id "sebastian" :name "Sebastian Lagerman"}
             {:id "henrik" :name "Henrik Nyström"}
             {:id "joppe" :name "Joppe Widstam"}]
-    :user-votes {"andreas" {"vote1" true "vote2" true "vote3" true "vote4" true}
-                 "henning" {"vote1" true "vote2" false "vote3" true "vote4" false}
-                 "sebastian" {"vote1" true "vote2" true "vote3" true "vote4" false}
-                 "henrik" {"vote1" true "vote2" true "vote3" false "vote4" false}
-                 "joppe" {"vote1" true "vote2" true "vote3" false "vote4" true}}
-    :movies [{:id "vote1"
-              :status :loading
-              :title "Vinland Saga"
-              :synopsis "Synopsis"
-              :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
-             {:id "vote2"
-              :status :loading
-              :title "Fate/Zero"
-              :synopsis "Synopsis"
-              :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
-             {:id "vote3"
-              :status :loading
-              :title "One Piece"
-              :synopsis "Synopsis"
-              :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
-             {:id "vote4"
-              :status :loading
-              :title "Naruto Shippuden"
-              :synopsis "Synopsis"
-              :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}]
-    :suggestions ["movie1" "movie2"]
+    :user-votes {"andreas" {"movie1" true "movie2" true "movie3" true "movie4" true}
+                 "henning" {"movie1" true "movie2" false "movie3" true "movie4" false}
+                 "sebastian" {"movie1" true "movie2" true "movie3" true "movie4" false}
+                 "henrik" {"movie1" true "movie2" true "movie3" false "movie4" false}
+                 "joppe" {"movie1" true "movie2" true "movie3" false "movie4" true}}
+    :movies {"movie1" {:id "movie1"
+                      :status :loading
+                      :title "Vinland Saga"
+                      :synopsis "Synopsis"
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
+             "movie2" {:id "movie2"
+                      :status :loading
+                      :title "Fate/Zero"
+                      :synopsis "Synopsis"
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
+             "movie3" {:id "movie3"
+                      :status :loading
+                      :title "One Piece"
+                      :synopsis "Synopsis"
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
+             "movie4" {:id "movie4"
+                      :status :loading
+                      :title "Naruto Shippuden"
+                      :synopsis "Synopsis"
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
+    :vote-prompts ["movie1" "movie2"]
     :search-results []}))
 
 (defn set-search-results [results]
@@ -55,7 +55,7 @@
 (spec/def ::user-votes (spec/map-of :user/id ::user-vote))
 (spec/def ::user-vote (spec/map-of :movie/id boolean?))
 
-(spec/def ::movies (spec/coll-of ::movie))
+(spec/def ::movies (spec/map-of :movie/id ::movie))
 (spec/def ::movie (spec/keys :req-un [:movie/id :movie/status :movie/title :movie/synopsis :movie/image-url]))
 (spec/def :movie/id string?)
 (spec/def :movie/status #{:loading :loaded})

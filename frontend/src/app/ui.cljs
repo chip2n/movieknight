@@ -12,6 +12,16 @@
 
 (defonce event-chan (async/chan))
 
+(defonce movie-vote-cursor
+  (let [src (fn ([k]
+                 (let [prompts (get-in @state/state k)
+                       movies (:movies @state/state)]
+                   (->> prompts
+                        (map #(get movies %))
+                        (filter (comp not nil?)))))
+              ([k v] (swap! state/state assoc-in k v)))]
+    (r/cursor src [:vote-prompts])))
+
 (defn movie-watch-question [{:keys [title image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
@@ -24,7 +34,13 @@
                     :justify-content :space-between}}
       [:button "No"]
       [:div]
-      [:button "Ye"]]]))
+      [:button {:on-click (fn [] (println "hello"))}
+       "Ye"]]]))
+
+(defn movie-vote-box []
+  (let [movies @movie-vote-cursor]
+    (when-not (empty? movies)
+      [movie-watch-question (first movies)])))
 
 (defn vote-list []
   [:div {:style {:display :flex :flex-direction :column}}
@@ -36,11 +52,13 @@
                                        (set! (.-size params) "small")
                                        (set! (.-label params) "Search")
                                        (r/create-element TextField params))
-                       :on-input-change (fn [ev] (->> ev
-                                                     .-target
-                                                     .-value
-                                                     (assoc {:type :search} :query)
-                                                     (async/put! event-chan)))
+                       :on-input-change (fn [ev _ reason]
+                                          (when (= reason "input")
+                                            (->> ev
+                                                 .-target
+                                                 .-value
+                                                 (assoc {:type :search} :query)
+                                                 (async/put! event-chan))))
                        :options search-results}])
    [:table
     {:style {:border-spacing 16}}
@@ -58,7 +76,7 @@
              (map first n)
              (clojure.string/join n))])]
 
-       (for [movie movies]
+       (for [[_ movie] movies]
          ^{:key (:id movie)}
          [:tr
           [:td
@@ -78,9 +96,7 @@
 (defn root-component []
   [:div {:style {:display :flex}}
    [vote-list]
-   [movie-watch-question
-    {:title "Shigatsu wa Kimi no Uso"
-     :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}]])
+   [movie-vote-box]])
 
 (defn render-app []
   (dom/render
