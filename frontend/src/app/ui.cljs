@@ -43,6 +43,28 @@
  :user-votes
  (fn [db v] (:user-votes db)))
 
+(defn sort-vote-list [rows]
+  "Sort the vote list first by # positive answers, then by # unanswered."
+  (sort-by
+       (juxt
+        (comp count (partial filter true?))
+        (comp count (partial filter nil?)))
+       #(compare %2 %1)
+       rows))
+
+(rf/reg-sub
+ :vote-list
+ (fn [db v]
+   (let [votes (:user-votes db)
+         movies (:movies db)
+         users (:users db)]
+     {:users users
+      :movies
+      (->> movies
+           (map (fn [[id m]] (concat [(:title m)]
+                                     (map #(get-in votes [(:id %) id]) users))))
+           (sort-vote-list))})))
+
 (defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
@@ -103,13 +125,11 @@
    [search-bar]
    [:table
     {:style {:border-spacing 16}}
-    (let [user-votes @(rf/subscribe [:user-votes])
-          users @(rf/subscribe [:users])
-          movies @(rf/subscribe [:movie-suggestions])]
+    (let [data @(rf/subscribe [:vote-list])]
       [:tbody
        [:tr
         [:td]
-        (for [user users]
+        (for [user (:users data)]
           ^{:key (:id user)}
           [:td {:style {:text-align :center}}
            (as-> (:name user) n
@@ -117,16 +137,15 @@
              (map first n)
              (clojure.string/join n))])]
 
-       (for [movie movies]
-         ^{:key (:id movie)}
+       (for [movie (:movies data)]
+         ^{:key (first movie)}
          [:tr
           [:td
            {:style {:width 200}}
-           (:title movie)]
-          (for [user users]
-            (let [user-vote (get (get user-votes (:id user)) (:id movie))]
-              ^{:key (str (:id user) "-" (:id movie))}
-              [vote user-vote]))])])]])
+           (first movie)]
+          (for [[i user-vote] (map vector (range (- (count movie) 1)) (drop 1 movie))]
+              ^{:key (str (first movie) "-" i)}
+              [vote user-vote])])])]])
 
 (defn root-component []
   [:div {:style {:display :flex}}

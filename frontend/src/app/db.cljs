@@ -12,7 +12,7 @@
             {:id "henrik" :name "Henrik Nyström"}
             {:id "joppe" :name "Joppe Widstam"}]
     :user-votes {"andreas" {"movie1" true "movie3" true}
-                 "henning" {"movie1" true "movie2" false "movie3" true "movie4" false}
+                 "henning" {"movie1" true "movie2" false "movie3" false }
                  "sebastian" {"movie1" true "movie2" true "movie3" true "movie4" false}
                  "henrik" {"movie1" true "movie2" true "movie3" false "movie4" false}
                  "joppe" {"movie1" true "movie2" true "movie3" false "movie4" true}}
