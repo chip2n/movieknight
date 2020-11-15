@@ -29,7 +29,9 @@
      [:p "Do you want to watch"]
      [:p title]
      [:img {:src image-url
-            :width width}]
+            :width width
+            :height 400
+            :style {:object-fit :cover}}]
 
      [:p (gstring/format "Rating: %.1f" rating)]
      [:p (str (subs synopsis 0 120) "…")]
