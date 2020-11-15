@@ -1,17 +1,16 @@
 (ns app.utils
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [clojure.core.async :as async :refer [go-loop alts! <! >! close! timeout chan]]))
+  (:require [clojure.spec.alpha :as spec]
+            [re-frame.core :as rf]))
 
-(defn debounce [in ms]
-  (let [out (chan)]
-    (go-loop [last-val nil]
-      (let [val (if (nil? last-val) (<! in) last-val)
-            timer (timeout ms)
-            [new-val ch] (alts! [in timer])]
-        (condp = ch
-          timer (do (when-not
-                        (>! out val)
-                        (close! in))
-                    (recur nil))
-          in (if new-val (recur new-val)))))
-    out))
+(defn validate-db []
+  (let [spec :app.db/app-state]
+    (rf/->interceptor
+     :id :validate-db
+     :after (fn [{{:keys [:event :re-frame.std-interceptors/untrimmed-event]} :coeffects
+                  {:keys [:db]} :effects :as context}]
+              (when (and (spec/check-asserts?) db (not (spec/valid? spec db)))
+                (rf/console :log db)
+                (throw (js/Error. (str "DB is invalid after event "
+                                       (or untrimmed-event event) "\n"
+                                       (subs (spec/explain-str spec db) 0 1000)))))
+              context))))
