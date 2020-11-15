@@ -24,6 +24,9 @@
 
 (defn main! []
   (println "[main]: reloaded")
+  (ui/render-app))
+
+(defn init! []
   (rf/dispatch-sync [:init-db])
   (ui/render-app))
 

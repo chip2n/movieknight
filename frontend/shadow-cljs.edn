@@ -10,7 +10,7 @@
  :builds {:app {:output-dir "target/"
                 :asset-path "."
                 :target :browser
-                :modules {:main {:init-fn app.main/main!}}
+                :modules {:main {:init-fn app.main/init!}}
                 :compiler-options {:closure-defines {re-frame.trace.trace-enabled? true}}
                 :devtools {:preloads [devtools.preload
                                       day8.re-frame-10x.preload]}}}}
