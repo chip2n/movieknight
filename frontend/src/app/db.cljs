@@ -5,12 +5,13 @@
 (rf/reg-event-db
  :init-db
  (fn [_ _]
-   {:users [{:id "andreas" :name "Andreas Arvidsson"}
+   {:session {:user-id "andreas"}
+    :users [{:id "andreas" :name "Andreas Arvidsson"}
             {:id "henning" :name "Henning Phan"}
             {:id "sebastian" :name "Sebastian Lagerman"}
             {:id "henrik" :name "Henrik Nyström"}
             {:id "joppe" :name "Joppe Widstam"}]
-    :user-votes {"andreas" {"movie1" true "movie2" true "movie3" true "movie4" true}
+    :user-votes {"andreas" {"movie1" true "movie3" true}
                  "henning" {"movie1" true "movie2" false "movie3" true "movie4" false}
                  "sebastian" {"movie1" true "movie2" true "movie3" true "movie4" false}
                  "henrik" {"movie1" true "movie2" true "movie3" false "movie4" false}
@@ -42,15 +43,17 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
                        :synopsis "Synopsis"
                        :rating 7.5
                        :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
-    :vote-prompts ["movie1" "movie2"]
     :search-results []}))
 
-(spec/def ::app-state (spec/keys :req-un [::users
+(spec/def ::app-state (spec/keys :req-un [::session
+                                          ::users
                                           ::user-votes
                                           ::movies
-                                          ::vote-prompts
                                           ::suggested-movies
                                           ::search-results]))
+
+(spec/def ::session (spec/keys :req-un [:session/user-id]))
+(spec/def :session/user-id string?)
 
 (spec/def ::users (spec/coll-of ::user))
 (spec/def ::user (spec/keys :req-un [:user/id :user/name]))
@@ -61,7 +64,6 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
 (spec/def ::user-vote (spec/map-of :movie/id boolean?))
 
 (spec/def ::suggested-movies (spec/coll-of :movie/id))
-(spec/def ::vote-prompts (spec/coll-of :movie/id))
 
 (spec/def ::movies (spec/map-of :movie/id ::movie))
 (spec/def ::movie (spec/keys :req-un [:movie/id

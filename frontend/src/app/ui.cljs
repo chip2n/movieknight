@@ -14,11 +14,12 @@
 (rf/reg-sub
  :vote-prompts
  (fn [db v]
-   (let [prompts (:vote-prompts db)
-         movies (:movies db)]
-     (->> prompts
-          (map #(get movies %))
-          (filter (comp not nil?))))))
+   (let [user-id (get-in db [:session :user-id])
+         voted-movies (keys (get-in db [:user-votes user-id]))
+         movies (:movies db)
+         unvoted-movies (clojure.set/difference (into #{} (keys movies))
+                                                (into #{} voted-movies))]
+     (map (partial get movies) unvoted-movies))))
 
 (rf/reg-sub
  :movie-suggestions

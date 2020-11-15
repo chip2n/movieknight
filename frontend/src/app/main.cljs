@@ -14,13 +14,17 @@
  :vote
  [(utils/validate-db)]
  (fn [db [_ {:keys [id answer]}]]
-   (update db :vote-prompts #(into [] (remove #{id} %)))))
+   (-> db
+       (update :vote-prompts #(into [] (remove #{id} %)))
+       (assoc-in [:user-votes "andreas" id] answer))))
 
 (rf/reg-event-db
  :suggest-movie
  [(utils/validate-db)]
  (fn [db [_ id]]
-   (update db :suggested-movies #(conj % id))))
+   (-> db
+       (update :suggested-movies #(conj % id))
+       (assoc-in [:user-votes "andreas" id] true))))
 
 (defn main! []
   (println "[main]: reloaded")
