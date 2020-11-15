@@ -14,14 +14,28 @@
 (defonce event-chan (async/chan))
 
 (defonce movie-vote-cursor
-  (let [src (fn ([k]
-                 (let [prompts (get-in @state/state k)
-                       movies (:movies @state/state)]
-                   (->> prompts
-                        (map #(get movies %))
-                        (filter (comp not nil?)))))
+  (let [src (fn
+              ([k]
+               (let [prompts (get-in @state/state k)
+                     movies (:movies @state/state)]
+                 (->> prompts
+                      (map #(get movies %))
+                      (filter (comp not nil?)))))
               ([k v] (swap! state/state assoc-in k v)))]
     (r/cursor src [:vote-prompts])))
+
+(defonce suggested-movies-cursor
+  (let [src (fn
+              ([k]
+               (let [prompts (get-in @state/state k)
+                     movies (:movies @state/state)]
+                 (->> prompts
+                      (map #(get movies %))
+                      (filter (comp not nil?))
+                      (into [])))
+               )
+              ([k v] (swap! state/state assoc-in k v)))]
+    (r/cursor src [:suggested-movies])))
 
 (defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
   (let [width 300]
@@ -62,11 +76,15 @@
                                       (set! (.-size params) "small")
                                       (set! (.-label params) "Search")
                                       (r/create-element TextField params))
-                      :on-input-change (fn [ev _ reason]
+                      :on-change (fn [_ value]
+                                   (as-> value v
+                                     (js->clj v)
+                                     (get v "value")
+                                     (assoc {:type :suggest-movie} :id v)
+                                     (async/put! event-chan v)))
+                      :on-input-change (fn [_ value reason]
                                          (when (= reason "input")
-                                           (->> ev
-                                                .-target
-                                                .-value
+                                           (->> value
                                                 (assoc {:type :search} :query)
                                                 (async/put! event-chan))))
                       :options search-results}]))
@@ -78,7 +96,7 @@
     {:style {:border-spacing 16}}
     (let [user-votes (:user-votes @state/state)
           users (:users @state/state)
-          movies (:movies @state/state)]
+          movies @suggested-movies-cursor]
       [:tbody
        [:tr
         [:td]
@@ -90,7 +108,7 @@
              (map first n)
              (clojure.string/join n))])]
 
-       (for [[_ movie] movies]
+       (for [movie movies]
          ^{:key (:id movie)}
          [:tr
           [:td

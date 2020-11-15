@@ -8,15 +8,22 @@
 
 (defonce request-chan (chan))
 
+(defn set-search-results [results]
+  (state/swap-state!
+   (fn [s]
+     (update-in s [:movies] merge (into {} (map (fn [x] [(:id x) x]) results)))
+     (assoc s :search-results (map (fn [x] {:value (:id x) :label (:title x)}) results))
+     )))
+
 (defn handle-search-request [{:keys [query]}]
   (if (<= (count query) 2)
     (do
      (println "Clearing search results")
-     (state/set-search-results []))
+     (set-search-results []))
     (go
       (println "Searching for" query)
       (let [result (<! (api/search query))]
-        (state/set-search-results result)))))
+        (set-search-results result)))))
 
 (defn make-search-component []
   (system/make-component
