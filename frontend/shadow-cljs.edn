@@ -1,6 +1,7 @@
 {:source-paths ["src"]
  :dependencies
  [[reagent "0.10.0"]
+  [re-frame "1.1.2"]
   [cljs-http "0.1.46"]]
  :dev-http {8080 "target/"}
  :builds {:app {:output-dir "target/"

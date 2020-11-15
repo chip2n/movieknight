@@ -1,9 +1,10 @@
-(ns app.state
-  (:require [reagent.core :as r]
-            [clojure.spec.alpha :as spec]))
+(ns app.db
+  (:require [clojure.spec.alpha :as spec]
+            [re-frame.core :as rf]))
 
-(defonce state
-  (r/atom
+(rf/reg-event-db
+ :init-db
+ (fn [_ _]
    {:users [{:id "andreas" :name "Andreas Arvidsson"}
             {:id "henning" :name "Henning Phan"}
             {:id "sebastian" :name "Sebastian Lagerman"}
@@ -43,17 +44,6 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
                        :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
     :vote-prompts ["movie1" "movie2"]
     :search-results []}))
-
-(defn swap-state! [f]
-  (swap! state
-         (fn [s]
-           (let [new-state (f s)]
-             (spec/assert ::app-state new-state)
-             new-state)))
-  nil)
-
-(defn remove-vote-prompt [id]
-  (swap-state! (fn [s] (update s :vote-prompts #(into [] (remove #{id} %))))))
 
 (spec/def ::app-state (spec/keys :req-un [::users
                                           ::user-votes

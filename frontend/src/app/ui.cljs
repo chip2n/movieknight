@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [reagent.core :as r]
             [reagent.dom :as dom]
-            [app.state :as state]
+            [re-frame.core :as rf]
             [app.api :as api]
             [app.search :as search]
             [goog.string :as gstring]
@@ -11,31 +11,36 @@
             [cljs-http.client :as http]
             [cljs.core.async :as async]))
 
-(defonce event-chan (async/chan))
+(rf/reg-sub
+ :vote-prompts
+ (fn [db v]
+   (let [prompts (:vote-prompts db)
+         movies (:movies db)]
+     (->> prompts
+          (map #(get movies %))
+          (filter (comp not nil?))))))
 
-(defonce movie-vote-cursor
-  (let [src (fn
-              ([k]
-               (let [prompts (get-in @state/state k)
-                     movies (:movies @state/state)]
-                 (->> prompts
-                      (map #(get movies %))
-                      (filter (comp not nil?)))))
-              ([k v] (swap! state/state assoc-in k v)))]
-    (r/cursor src [:vote-prompts])))
+(rf/reg-sub
+ :movie-suggestions
+ (fn [db v]
+   (let [prompts (:suggested-movies db)
+         movies (:movies db)]
+     (->> prompts
+          (map #(get movies %))
+          (filter (comp not nil?))
+          (into [])))))
 
-(defonce suggested-movies-cursor
-  (let [src (fn
-              ([k]
-               (let [prompts (get-in @state/state k)
-                     movies (:movies @state/state)]
-                 (->> prompts
-                      (map #(get movies %))
-                      (filter (comp not nil?))
-                      (into [])))
-               )
-              ([k v] (swap! state/state assoc-in k v)))]
-    (r/cursor src [:suggested-movies])))
+(rf/reg-sub
+ :search-results
+ (fn [db v] (:search-results db)))
+
+(rf/reg-sub
+ :users
+ (fn [db v] (:users db)))
+
+(rf/reg-sub
+ :user-votes
+ (fn [db v] (:user-votes db)))
 
 (defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
   (let [width 300]
@@ -52,23 +57,19 @@
    
      [:div {:style {:display :flex
                     :justify-content :space-between}}
-      [:button {:on-click (fn [] (async/put! event-chan {:type :vote
-                                                         :id id
-                                                         :answer false}))}
+      [:button {:on-click #(rf/dispatch [:vote {:id id :answer false}])}
        "No"]
       [:div]
-      [:button {:on-click (fn [] (async/put! event-chan {:type :vote
-                                                         :id id
-                                                         :answer true}))}
+      [:button {:on-click #(rf/dispatch [:vote {:id id :answer true}])}
        "Ye"]]]))
 
 (defn movie-vote-box []
-  (let [movies @movie-vote-cursor]
+  (let [movies @(rf/subscribe [:vote-prompts])]
     (when-not (empty? movies)
       [movie-watch-question (first movies)])))
 
 (defn search-bar []
-  (let [search-results (:search-results @state/state)]
+  (let [search-results @(rf/subscribe [:search-results])]
     [:> Autocomplete {:free-solo true
                       :get-option-label (fn [x] (get (js->clj x) "label"))
                       :render-input (fn [^js params]
@@ -80,13 +81,10 @@
                                    (as-> value v
                                      (js->clj v)
                                      (get v "value")
-                                     (assoc {:type :suggest-movie} :id v)
-                                     (async/put! event-chan v)))
+                                     (rf/dispatch [:suggest-movie v])))
                       :on-input-change (fn [_ value reason]
                                          (when (= reason "input")
-                                           (->> value
-                                                (assoc {:type :search} :query)
-                                                (async/put! event-chan))))
+                                           (rf/dispatch [:search value])))
                       :options search-results}]))
 
 (defn vote-list []
@@ -94,9 +92,9 @@
    [search-bar]
    [:table
     {:style {:border-spacing 16}}
-    (let [user-votes (:user-votes @state/state)
-          users (:users @state/state)
-          movies @suggested-movies-cursor]
+    (let [user-votes @(rf/subscribe [:user-votes])
+          users @(rf/subscribe [:users])
+          movies @(rf/subscribe [:movie-suggestions])]
       [:tbody
        [:tr
         [:td]

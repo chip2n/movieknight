@@ -1,28 +1,29 @@
 (ns app.main
-  (:require [app.state :as state]
+  (:require [app.db :as db]
             [app.api :as api]
             [app.search :as search]
-            [app.system :as system]
             [app.ui :as ui]
-            [app.vote :as vote]
             [app.utils :as utils]
+            [re-frame.core :as rf]
             [cljs.core.async :as async :refer [pipeline]]
             [clojure.spec.alpha :as spec]))
 
 (spec/check-asserts true)
 
-(def test-pub (async/pub ui/event-chan :type))
-(async/sub test-pub :search search/request-chan)
-(async/sub test-pub :vote vote/request-chan)
+(rf/reg-event-db
+ :vote
+ (fn [db [_ {:keys [id answer]}]]
+   (update db :vote-prompts #(into [] (remove #{id} %)))))
+
+(rf/reg-event-db
+ :suggest-movie
+ (fn [db [_ id]]
+   (update db :suggested-movies #(conj % id))))
 
 (defn main! []
   (println "[main]: reloaded")
-  (system/start! [(search/make-search-component)
-                  (vote/make-vote-component)])
+  (rf/dispatch-sync [:init-db])
   (ui/render-app))
-
-(defn ^:dev/before-load stop []
-  (system/stop!))
 
 (defn ^:dev/after-load start []
   (main!))
