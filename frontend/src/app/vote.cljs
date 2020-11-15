@@ -1,15 +1,13 @@
 (ns app.vote
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs.core.async :as async :refer [chan <! go-loop]]
+  (:require [cljs.core.async :as async]
             [app.api :as api]
             [app.state :as state]
-            [app.system :as system]
-            [app.utils :as utils]))
+            [app.system :as system]))
 
-(defonce request-chan (chan))
+(defonce request-chan (async/chan))
 
-(defn handle-vote-request [{:keys [answer]}]
-  (println "voted" answer))
+(defn handle-vote-request [{:keys [id answer]}]
+  (state/remove-vote-prompt id))
 
 (defn make-vote-component []
   (system/make-component

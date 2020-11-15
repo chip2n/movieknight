@@ -5,6 +5,7 @@
             [app.state :as state]
             [app.api :as api]
             [app.search :as search]
+            [goog.string :as gstring]
             ["@material-ui/lab/Autocomplete" :default Autocomplete]
             ["@material-ui/core/TextField" :default TextField]
             [cljs-http.client :as http]
@@ -22,20 +23,27 @@
               ([k v] (swap! state/state assoc-in k v)))]
     (r/cursor src [:vote-prompts])))
 
-(defn movie-watch-question [{:keys [title image-url]}]
+(defn movie-watch-question [{:keys [id title synopsis image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
      [:p "Do you want to watch"]
      [:p title]
      [:img {:src image-url
             :width width}]
+
+     [:p (gstring/format "Rating: %.1f" 1.0)]
+     [:p (str (subs synopsis 0 120) "…")]
    
      [:div {:style {:display :flex
                     :justify-content :space-between}}
-      [:button {:on-click (fn [] (async/put! event-chan {:type :vote :answer false}))}
+      [:button {:on-click (fn [] (async/put! event-chan {:type :vote
+                                                         :id id
+                                                         :answer false}))}
        "No"]
       [:div]
-      [:button {:on-click (fn [] (async/put! event-chan {:type :vote :answer true}))}
+      [:button {:on-click (fn [] (async/put! event-chan {:type :vote
+                                                         :id id
+                                                         :answer true}))}
        "Ye"]]]))
 
 (defn movie-vote-box []
