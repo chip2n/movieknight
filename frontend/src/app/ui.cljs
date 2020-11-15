@@ -23,7 +23,7 @@
               ([k v] (swap! state/state assoc-in k v)))]
     (r/cursor src [:vote-prompts])))
 
-(defn movie-watch-question [{:keys [id title synopsis image-url]}]
+(defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
      [:p "Do you want to watch"]
@@ -31,7 +31,7 @@
      [:img {:src image-url
             :width width}]
 
-     [:p (gstring/format "Rating: %.1f" 1.0)]
+     [:p (gstring/format "Rating: %.1f" rating)]
      [:p (str (subs synopsis 0 120) "…")]
    
      [:div {:style {:display :flex

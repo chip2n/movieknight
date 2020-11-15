@@ -20,6 +20,7 @@
                        :synopsis "Young Thorfinn grew up listening to the stories of old sailors that had traveled the ocean and reached the place of legend, Vinland. It's said to be warm and fertile, a place where there would be no need for fighting—not at all like the frozen village in Iceland where he was born, and certainly not like his current life as a mercenary. War is his home now. Though his father once told him, \"You have no enemies, nobody does. There is nobody who it's okay to hurt,\" as he grew, Thorfinn knew that nothing was further from the truth.
 
 The war between England and the Danes grows worse with each passing year. Death has become commonplace, and the viking mercenaries are loving every moment of it. Allying with either side will cause a massive swing in the balance of power, and the vikings are happy to make names for themselves and take any spoils they earn along the way. Among the chaos, Thorfinn must take his revenge and kill Askeladd, the man who murdered his father. The only paradise for the vikings, it seems, is the era of war and death that rages on."
+                       :rating 7.3
                        :image-url "https://cdn.myanimelist.net/images/anime/1500/103005l.webp"}
              "movie2" {:id "movie2"
                        :status :loading
@@ -29,16 +30,19 @@ The war between England and the Danes grows worse with each passing year. Death 
 Kiritsugu now stands at the center of a cutthroat game of survival, facing off against six other participants, each armed with an ancient familiar, and fueled by unique desires and ideals. Accompanied by his own familiar, Saber, the notorious mercenary soon finds his greatest opponent in Kirei Kotomine, a priest who seeks salvation from the emptiness within himself in pursuit of Kiritsugu.
 
 Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events of the Fourth Holy Grail War—10 years prior to Fate/stay night. Witness a battle royale in which no one is guaranteed to survive."
+                       :rating 7.5
                        :image-url "https://cdn.myanimelist.net/images/anime/2/73249l.webp"}
              "movie3" {:id "movie3"
                        :status :loading
                        :title "One Piece"
                        :synopsis "Synopsis"
+                       :rating 7.5
                        :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
              "movie4" {:id "movie4"
                        :status :loading
                        :title "Naruto Shippuden"
                        :synopsis "Synopsis"
+                       :rating 7.5
                        :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
     :vote-prompts ["movie1" "movie2"]
     :search-results []}))
@@ -68,11 +72,17 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
 (spec/def ::user-vote (spec/map-of :movie/id boolean?))
 
 (spec/def ::movies (spec/map-of :movie/id ::movie))
-(spec/def ::movie (spec/keys :req-un [:movie/id :movie/status :movie/title :movie/synopsis :movie/image-url]))
+(spec/def ::movie (spec/keys :req-un [:movie/id
+                                      :movie/status
+                                      :movie/title
+                                      :movie/synopsis
+                                      :movie/rating
+                                      :movie/image-url]))
 (spec/def :movie/id string?)
 (spec/def :movie/status #{:loading :loaded})
 (spec/def :movie/title string?)
 (spec/def :movie/synopsis string?)
+(spec/def :movie/rating float?)
 (spec/def :movie/image-url string?)
 
 (spec/def ::search-results (spec/coll-of :search/result))
