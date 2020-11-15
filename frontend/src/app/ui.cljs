@@ -51,24 +51,27 @@
     (when-not (empty? movies)
       [movie-watch-question (first movies)])))
 
+(defn search-bar []
+  (let [search-results (:search-results @state/state)]
+    [:> Autocomplete {:free-solo true
+                      :get-option-label (fn [x] (get (js->clj x) "label"))
+                      :render-input (fn [^js params]
+                                      (set! (.-variant params) "outlined")
+                                      (set! (.-size params) "small")
+                                      (set! (.-label params) "Search")
+                                      (r/create-element TextField params))
+                      :on-input-change (fn [ev _ reason]
+                                         (when (= reason "input")
+                                           (->> ev
+                                                .-target
+                                                .-value
+                                                (assoc {:type :search} :query)
+                                                (async/put! event-chan))))
+                      :options search-results}]))
+
 (defn vote-list []
   [:div {:style {:display :flex :flex-direction :column}}
-   (let [search-results (:search-results @state/state)]
-     [:> Autocomplete {:free-solo true
-                       :get-option-label (fn [x] (get (js->clj x) "label"))
-                       :render-input (fn [^js params]
-                                       (set! (.-variant params) "outlined")
-                                       (set! (.-size params) "small")
-                                       (set! (.-label params) "Search")
-                                       (r/create-element TextField params))
-                       :on-input-change (fn [ev _ reason]
-                                          (when (= reason "input")
-                                            (->> ev
-                                                 .-target
-                                                 .-value
-                                                 (assoc {:type :search} :query)
-                                                 (async/put! event-chan))))
-                       :options search-results}])
+   [search-bar]
    [:table
     {:style {:border-spacing 16}}
     (let [user-votes (:user-votes @state/state)

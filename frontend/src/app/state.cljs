@@ -56,7 +56,7 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
   nil)
 
 (defn set-search-results [results]
-  (swap-state! #(assoc % "search-results" results)))
+  (swap-state! #(assoc % :search-results results)))
 
 (defn remove-vote-prompt [id]
   (swap-state! (fn [s] (update s :vote-prompts #(into [] (remove #{id} %))))))
