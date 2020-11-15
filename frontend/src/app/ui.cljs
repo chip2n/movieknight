@@ -87,6 +87,16 @@
                                            (rf/dispatch [:search value])))
                       :options search-results}]))
 
+(defn vote [answer]
+  [:td
+   {:style {:height 32
+            :width 32
+            :background-color
+            (case answer
+              true "#00ff00"
+              false "#ff0000"
+              "#00000020")}}])
+
 (defn vote-list []
   [:div {:style {:display :flex :flex-direction :column}}
    [search-bar]
@@ -115,13 +125,7 @@
           (for [user users]
             (let [user-vote (get (get user-votes (:id user)) (:id movie))]
               ^{:key (str (:id user) "-" (:id movie))}
-              [:td
-               {:style {:height 32
-                        :width 32
-                        :background-color
-                        (if user-vote
-                          "#00ff00"
-                          "#ff0000")}}]))])])]])
+              [vote user-vote]))])])]])
 
 (defn root-component []
   [:div {:style {:display :flex}}
