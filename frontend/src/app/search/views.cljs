@@ -93,9 +93,9 @@
                          :display :flex
                          :flex-direction :column}
                  :ref (fn [el] (reset! ref el))}
-           [:input {:style {:height 32}
-                    :value input
-                    :on-key-down (partial handle-keydown state search-results)
-                    :on-change (partial handle-change state)}]
+           [:input.search-bar
+            {:value input
+             :on-key-down (partial handle-keydown state search-results)
+             :on-change (partial handle-change state)}]
            (when (and expanded search-results)
              [search-dropdown state search-results selected-index])]))})))

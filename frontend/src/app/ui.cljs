@@ -9,7 +9,7 @@
             [cljs.core.async :as async]))
 
 (defn root-component []
-  [:div {:style {:display :flex}}
+  [:div#root
    [vote/vote-list]
    [vote/movie-vote-box]])
 

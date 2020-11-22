@@ -3,6 +3,12 @@ body {
     color: #ffffff;
 }
 
+#root {
+    display: flex;
+    justify-content: center;
+    margin: 16px 0px 16px 0px;
+}
+
 .dropdown {
     position: absolute;
     width: 100%;
@@ -12,7 +18,7 @@ body {
     list-style: none;
     box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.1);
     z-index: 1;
-    background-color: #ffffff;
+    background-color: #4B4E54;
 }
 
 .dropdown-content {
@@ -38,4 +44,12 @@ body {
 
 .vote-box.answer-none {
     background-color: #FFFFFF40;
+}
+
+.search-bar {
+    height: 32px;
+    background: #4B4E54;
+    border: 2px solid #FFFFFF08;
+    border-radius: 32px;
+    padding: 0px 12px 0px 12px;
 }
