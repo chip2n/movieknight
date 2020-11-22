@@ -71,7 +71,7 @@
      [:li.dropdown-content
       {:style {:background-color
                (if (= i selected-index)
-                 "#ff0000")}
+                 "#FFFFFF20")}
        :on-mouse-over (partial handle-mouse-over state results result)
        :on-click (partial handle-click result)}
       (:label result)])])
