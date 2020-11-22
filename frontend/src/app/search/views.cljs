@@ -107,4 +107,7 @@
               :on-key-down (partial handle-keydown state search-results)
               :on-change (partial handle-change state)}]]
            (when (and expanded search-results)
-             [search-dropdown state search-results selected-index])]))})))
+             [:div {:style {:position :absolute
+                            :top 34
+                            :width "100%"}}
+              [search-dropdown state search-results selected-index]])]))})))
