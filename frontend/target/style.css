@@ -39,12 +39,14 @@ body {
     border: 2px solid #00000020;
 }
 
-.vote-box.answer-yes {
+.answer-yes {
     background-color: #60E896;
+    color: #ffffff;
 }
 
-.vote-box.answer-no {
+.answer-no {
     background-color: #E87060;
+    color: #ffffff;
 }
 
 .vote-box.answer-none {
@@ -60,6 +62,12 @@ body {
     margin: 0px 16px 0px 16px;
 }
 
+.movie-question-img {
+    object-fit: cover;
+    border-radius: 24px;
+    margin: 24px 0px 0px 0px;
+}
+
 .movie-question-caption {
     color: #ffffff97;
 }
@@ -73,8 +81,10 @@ body {
     font-weight: bold;
 }
 
-.movie-question {
-    object-fit: cover;
-    border-radius: 24px;
-    margin: 24px 0px 0px 0px;
+.movie-question-btn {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 0px;
+    box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.1);
 }

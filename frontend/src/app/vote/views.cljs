@@ -43,20 +43,22 @@
     [:div {:style {:width width}}
      [:div.movie-question-caption "Do you want to watch"]
      [:div.movie-question-header title]
-     [:img.movie-question {:src image-url
-                           :width width
-                           :height 400}]
+     [:img.movie-question-img {:src image-url :width width :height 400}]
 
      [:p [:span.movie-question-header "Rating: "] [:span (gstring/format "%.1f" rating)]]
      [:p (str (subs synopsis 0 120) "…")]
    
      [:div {:style {:display :flex
                     :justify-content :space-between}}
-      [:button {:on-click #(rf/dispatch [:vote {:id id :answer false}])}
-       "No"]
+      [:button.movie-question-btn
+       {:class [:answer-no]
+        :on-click #(rf/dispatch [:vote {:id id :answer false}])}
+       [:i.fa.fa-times]]
       [:div]
-      [:button {:on-click #(rf/dispatch [:vote {:id id :answer true}])}
-       "Ye"]]]))
+      [:button.movie-question-btn
+       {:class [:answer-yes]
+        :on-click #(rf/dispatch [:vote {:id id :answer true}])}
+       [:i.fa.fa-check]]]]))
 
 (defn movie-vote-box []
   (let [movies @(rf/subscribe [:vote-prompts])]
