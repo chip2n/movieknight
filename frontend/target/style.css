@@ -15,3 +15,10 @@
     flex-grow: 1;
     padding: 8px;
 }
+
+.vote-box {
+    height: 32px;
+    width: 32px;
+    border-radius: 8px;
+    border: 2px solid #00000020;
+}

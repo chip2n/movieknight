@@ -5,10 +5,8 @@
             [app.search.views :as search]))
 
 (defn vote [answer]
-  [:td
-   {:style {:height 32
-            :width 32
-            :background-color
+  [:td.vote-box
+   {:style {:background-color
             (case answer
               true "#00ff00"
               false "#ff0000"
