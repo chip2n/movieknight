@@ -14,6 +14,9 @@
     "Enter" [:accept-selection]
     nil))
 
+(defn- set-selection [state index]
+  (assoc state :selected-index index))
+
 (defn- move-selection [state delta]
   (update state :selected-index
           (fn [index]
@@ -51,14 +54,20 @@
 (defn- handle-click [result]
   (rf/dispatch [:suggest-movie (:id result)]))
 
-(defn- search-dropdown [results selected-index]
+(defn- handle-mouse-over [state results result]
+  (let [index (.indexOf results result)]
+    (swap! state set-selection index)))
+
+(defn- search-dropdown [state results selected-index]
   [:ul.dropdown
    (for [[result i] (map vector results (range))]
      ^{:key (str "search-result-" (:id result))}
-     [:li.dropdown-content {:style {:background-color
-                                    (if (= i selected-index)
-                                      "#ff0000")}
-                            :on-click (partial handle-click result)}
+     [:li.dropdown-content
+      {:style {:background-color
+               (if (= i selected-index)
+                 "#ff0000")}
+       :on-mouse-over (partial handle-mouse-over state results result)
+       :on-click (partial handle-click result)}
       (:label result)])])
 
 (defn search-bar []
@@ -89,4 +98,4 @@
                     :on-key-down (partial handle-keydown state search-results)
                     :on-change (partial handle-change state)}]
            (when (and expanded search-results)
-             [search-dropdown search-results selected-index])]))})))
+             [search-dropdown state search-results selected-index])]))})))
