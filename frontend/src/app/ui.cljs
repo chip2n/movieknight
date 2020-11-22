@@ -4,7 +4,6 @@
             [reagent.dom :as dom]
             [re-frame.core :as rf]
             [app.api :as api]
-            [app.search :as search]
             [app.vote.views :as vote]
             [cljs-http.client :as http]
             [cljs.core.async :as async]))

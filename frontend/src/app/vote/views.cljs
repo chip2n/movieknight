@@ -2,7 +2,7 @@
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [goog.string :as gstring]
-            [app.search :as search]))
+            [app.search.views :as search]))
 
 (defn vote [answer]
   [:td

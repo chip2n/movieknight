@@ -1,7 +1,8 @@
 (ns app.main
   (:require [app.db :as db]
             [app.api :as api]
-            [app.search :as search]
+            [app.search.events]
+            [app.search.subs]
             [app.vote.events]
             [app.vote.subs]
             [app.ui :as ui]
