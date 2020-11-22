@@ -58,6 +58,12 @@
   (let [index (.indexOf results result)]
     (swap! state set-selection index)))
 
+(defn- handle-click-outside [state ref ev]
+  (let [expanded (.contains @ref (.-target ev))]
+    (swap! state (fn [s] (-> s
+                             (assoc :expanded expanded)
+                             (set-selection nil))))))
+
 (defn- search-dropdown [state results selected-index]
   [:ul.dropdown
    (for [[result i] (map vector results (range))]
@@ -73,7 +79,7 @@
 (defn search-bar []
   (let [state (r/atom (initial-state))
         ref (clojure.core/atom nil)
-        click-listener (fn [ev] (swap! state assoc :expanded (.contains @ref (.-target ev))))]
+        click-listener (partial handle-click-outside state ref)]
     (r/create-class
      {:display-name "search-bar"
 
