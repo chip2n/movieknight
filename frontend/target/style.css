@@ -74,6 +74,11 @@ body {
     color: #ffffff;
 }
 
+.movie-question-content {
+    animation-duration: 0.6s;
+    animation-name: slidein;
+}
+
 .movie-question-img {
     object-fit: cover;
     border-radius: 24px;
@@ -99,4 +104,16 @@ body {
     border-radius: 50%;
     border: 0px;
     box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.1);
+}
+
+@keyframes slidein {
+    from {
+        transform: scale(0.95) translate(32px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1.0) translate(0px);
+        opacity: 1;
+    }
 }

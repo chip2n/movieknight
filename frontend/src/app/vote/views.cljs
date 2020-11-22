@@ -42,11 +42,12 @@
   (let [width 300]
     [:div {:style {:width width}}
      [:div.movie-question-caption "Do you want to watch"]
-     [:div.movie-question-header title]
-     [:img.movie-question-img {:src image-url :width width :height 400}]
+      [:div.movie-question-header title]
+     [:div.movie-question-content {:key id}
+      [:img.movie-question-img {:src image-url :width width :height 400}]
 
-     [:p [:span.movie-question-header "Rating: "] [:span (gstring/format "%.1f" rating)]]
-     [:p (str (subs synopsis 0 120) "…")]
+      [:p [:span.movie-question-header "Rating: "] [:span (gstring/format "%.1f" rating)]]
+      [:p (str (subs synopsis 0 120) "…")]]
    
      [:div {:style {:display :flex
                     :justify-content :space-between}}
