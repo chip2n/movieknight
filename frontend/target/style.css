@@ -22,3 +22,15 @@
     border-radius: 8px;
     border: 2px solid #00000020;
 }
+
+.vote-box.answer-yes {
+    background-color: #60E896;
+}
+
+.vote-box.answer-no {
+    background-color: #E87060;
+}
+
+.vote-box.answer-none {
+    background-color: #FFFFFF40;
+}

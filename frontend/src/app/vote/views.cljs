@@ -6,11 +6,10 @@
 
 (defn vote [answer]
   [:td.vote-box
-   {:style {:background-color
-            (case answer
-              true "#00ff00"
-              false "#ff0000"
-              "#00000020")}}])
+   {:class (case answer
+             true :answer-yes
+             false :answer-no
+             :answer-none)}])
 
 (defn vote-list []
   [:div {:style {:display :flex
