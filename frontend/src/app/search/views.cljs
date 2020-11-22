@@ -99,15 +99,14 @@
                          :display :flex
                          :flex-direction :row}
                  :ref (fn [el] (reset! ref el))}
+           (when (and expanded search-results)
+             [:div {:style {:position :absolute
+                            :width "100%"}}
+              [search-dropdown state search-results selected-index]])
            [:div.search-bar-container
             [:i.fa.fa-search {:style {:display :flex}}]
             [:input.search-bar
              {:value input
               :placeholder "Search anime"
               :on-key-down (partial handle-keydown state search-results)
-              :on-change (partial handle-change state)}]]
-           (when (and expanded search-results)
-             [:div {:style {:position :absolute
-                            :top 34
-                            :width "100%"}}
-              [search-dropdown state search-results selected-index]])]))})))
+              :on-change (partial handle-change state)}]]]))})))
