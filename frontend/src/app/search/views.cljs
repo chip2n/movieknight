@@ -43,7 +43,7 @@
                            :z-index 1
                            :background-color "#ffffff"}}
               (for [result search-results]
-                ^{:key (str "search-result-" (:value result))}
+                ^{:key (str "search-result-" (:id result))}
                 [:li.dropdown-content
                  {:on-click (fn [] (rf/dispatch [:suggest-movie (:id result)]))}
                  (:label result)])])]))})))
