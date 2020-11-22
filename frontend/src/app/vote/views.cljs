@@ -41,14 +41,13 @@
 (defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
-     [:p "Do you want to watch"]
-     [:p title]
-     [:img {:src image-url
-            :width width
-            :height 400
-            :style {:object-fit :cover}}]
+     [:div.movie-question-caption "Do you want to watch"]
+     [:div.movie-question-header title]
+     [:img.movie-question {:src image-url
+                           :width width
+                           :height 400}]
 
-     [:p (gstring/format "Rating: %.1f" rating)]
+     [:p [:span.movie-question-header "Rating: "] [:span (gstring/format "%.1f" rating)]]
      [:p (str (subs synopsis 0 120) "…")]
    
      [:div {:style {:display :flex

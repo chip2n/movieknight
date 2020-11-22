@@ -59,3 +59,22 @@ body {
     padding: 0px 12px 0px 12px;
     margin: 0px 16px 0px 16px;
 }
+
+.movie-question-caption {
+    color: #ffffff97;
+}
+
+.movie-question-header {
+    font-weight: bold;
+    margin: 4px 0px 0px 0px;
+}
+
+.movie-question-rating {
+    font-weight: bold;
+}
+
+.movie-question {
+    object-fit: cover;
+    border-radius: 24px;
+    margin: 24px 0px 0px 0px;
+}
