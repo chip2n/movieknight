@@ -12,8 +12,7 @@
              :answer-none)}])
 
 (defn vote-list []
-  [:div {:style {:display :flex
-                 :flex-direction :column}}
+  [:div#vote-list
    [search/search-bar]
    [:table
     {:style {:border-spacing 16}}

@@ -27,6 +27,11 @@ body {
     padding: 8px;
 }
 
+#vote-list {
+    display: flex;
+    flex-direction: column;
+}
+
 .vote-box {
     height: 32px;
     width: 32px;
@@ -52,4 +57,5 @@ body {
     border: 2px solid #FFFFFF08;
     border-radius: 32px;
     padding: 0px 12px 0px 12px;
+    margin: 0px 16px 0px 16px;
 }
