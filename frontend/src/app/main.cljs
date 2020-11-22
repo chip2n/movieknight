@@ -18,13 +18,14 @@
        (update :vote-prompts #(into [] (remove #{id} %)))
        (assoc-in [:user-votes "andreas" id] answer))))
 
-(rf/reg-event-db
+(rf/reg-event-fx
  :suggest-movie
  [(utils/validate-db)]
- (fn [db [_ id]]
-   (-> db
-       (update :suggested-movies #(conj % id))
-       (assoc-in [:user-votes "andreas" id] true))))
+ (fn [{:keys [db]} [_ id]]
+   {:db (-> db
+            (update :suggested-movies #(conj % id))
+            (assoc-in [:user-votes "andreas" id] true))
+    :dispatch [:set-search-results []]}))
 
 (defn main! []
   (println "[main]: reloaded")

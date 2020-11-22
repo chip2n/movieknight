@@ -10,7 +10,7 @@
         (:body response))))
 
 (defn search [query]
-  (go (<! (timeout 2000))
+  (go (<! (timeout 200))
       [{:id "chobits"
         :title "Chobits"
         :synopsis "When computers start to look like humans, can love remain the same?

@@ -78,6 +78,5 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
 (spec/def :movie/image-url string?)
 
 (spec/def ::search-results (spec/coll-of :search/result))
-(spec/def :search/result (spec/keys :req-un [:search/value :search/label]))
-(spec/def :search/value string?)
+(spec/def :search/result (spec/keys :req-un [:movie/id :search/label]))
 (spec/def :search/label string?)

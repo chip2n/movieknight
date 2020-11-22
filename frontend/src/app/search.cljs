@@ -28,4 +28,4 @@
  (fn [db [_ results]]
    (-> db
        (update-in [:movies] merge (into {} (map (fn [x] [(:id x) x]) results)))
-       (assoc :search-results (map (fn [x] {:value (:id x) :label (:title x)}) results)))))
+       (assoc :search-results (map (fn [x] {:id (:id x) :label (:title x)}) results)))))
