@@ -91,11 +91,14 @@
               {:keys [input expanded selected-index]} @state]
           [:div {:style {:position :relative
                          :display :flex
-                         :flex-direction :column}
+                         :flex-direction :row}
                  :ref (fn [el] (reset! ref el))}
-           [:input.search-bar
-            {:value input
-             :on-key-down (partial handle-keydown state search-results)
-             :on-change (partial handle-change state)}]
+           [:div.search-bar-container
+            [:i.fa.fa-search {:style {:display :flex}}]
+            [:input.search-bar
+             {:value input
+              :placeholder "Search anime"
+              :on-key-down (partial handle-keydown state search-results)
+              :on-change (partial handle-change state)}]]
            (when (and expanded search-results)
              [search-dropdown state search-results selected-index])]))})))

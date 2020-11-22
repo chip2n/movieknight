@@ -53,13 +53,25 @@ body {
     background-color: #FFFFFF40;
 }
 
-.search-bar {
+.search-bar-container {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
     height: 32px;
     background: #4B4E54;
     border: 2px solid #FFFFFF08;
     border-radius: 32px;
     padding: 0px 12px 0px 12px;
     margin: 0px 16px 0px 16px;
+}
+
+.search-bar {
+    display: flex;
+    flex-grow: 1;
+    background: none;
+    border: 0px;
+    margin: 0px 0px 0px 8px;
+    color: #ffffff;
 }
 
 .movie-question-img {
