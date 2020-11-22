@@ -1,0 +1,9 @@
+.dropdown-content {
+    display: flex;
+    flex-grow: 1;
+    padding: 8px;
+}
+
+.dropdown-content:hover {
+    background-color: #0000FF;
+}

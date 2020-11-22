@@ -1,5 +1,6 @@
-
-/target
+/target/main.js
+/target/manifest.edn
+/target/cljs-runtime
 /node_modules
 /yarn.lock
 /package-lock.json
