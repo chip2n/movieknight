@@ -22,7 +22,8 @@
         [:td]
         (for [user (:users data)]
           ^{:key (:id user)}
-          [:td {:style {:text-align :center}}
+          [:td {:style {:font-weight :bold
+                        :text-align :center}}
            (as-> (:name user) n
              (clojure.string/split n " ")
              (map first n)
@@ -32,7 +33,8 @@
          ^{:key (first movie)}
          [:tr
           [:td
-           {:style {:width 200}}
+           {:style {:width 200
+                    :font-weight :bold}}
            (first movie)]
           (for [[i user-vote] (map vector (range (- (count movie) 1)) (drop 1 movie))]
               ^{:key (str (first movie) "-" i)}
