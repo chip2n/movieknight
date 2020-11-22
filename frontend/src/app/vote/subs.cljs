@@ -2,10 +2,6 @@
   (:require [re-frame.core :as rf]))
 
 (rf/reg-sub
- :users
- (fn [db v] (:users db)))
-
-(rf/reg-sub
  :user-votes
  (fn [db v] (:user-votes db)))
 
