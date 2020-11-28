@@ -1,19 +1,11 @@
 (ns backend.core
   (:require [com.stuartsierra.component :as component]
-            [backend.server :as server]
-            [backend.socket :as socket]))
-
-(defn root-system []
-  (component/system-map
-   :websocket (socket/create)
-   :server (component/using
-            (server/create 8020)
-            [:websocket])))
+            [backend.system :as system]))
 
 (defn -main [& args]
-  (component/start (root-system)))
+  (component/start (system/create)))
 
 (comment
-  (def system (root-system))
+  (def system (system/create))
   (alter-var-root #'system component/start)
   (alter-var-root #'system component/stop))
