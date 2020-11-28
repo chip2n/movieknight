@@ -9,22 +9,32 @@
 ;;   (when-let [el (.getElementById js/document "sente-csrf-token")]
 ;;     (.getAttribute el "data-csrf-token")))
 
-(let [{:keys [chsk ch-recv send-fn state]}
-      (sente/make-channel-socket-client!
-       "/chsk"
-       nil ;; TODO ?csrf-token
-       {:type :auto :port 8020 :packer :edn})]
+(defn create-socket []
+  (let [{:keys [chsk ch-recv send-fn state]}
+        (sente/make-channel-socket-client!
+         "/chsk"
+         nil ;; TODO ?csrf-token
+         {:type :auto :port 8020 :packer :edn})]
+    {:chsk chsk
+     :ch-chsk ch-recv
+     :chsk-send! send-fn
+     :chsk-state state}))
 
-  (def chsk       chsk)
-  (def ch-chsk    ch-recv)
-  (def chsk-send! send-fn)
-  (def chsk-state state))
+(defn send [socket event & [timeout reply-fn]]
+  ((:chsk-send! socket) event timeout reply-fn))
+
+(defn disconnect [socket]
+  (sente/chsk-disconnect! (:chsk socket)))
+
+(defonce socket (atom nil))
 
 (comment
-  (sente/chsk-disconnect! chsk)
-  (chsk-send! [:chsk/close])
-  (chsk-send! [:app/get-votes2 {:hello "hi"}])
-  (chsk-send! [:app/get-votes {:hello "hi"}])
-  (chsk-send! [:app/get-votes {:hello "hi"}]
-              4000
-              (fn [reply] (println "got reply" reply))))
+  (reset! socket (create-socket))
+
+  (send @socket [:app/get-votes2 {:hello "hi"}])
+  (send @socket [:app/get-votes {:hello "hi"}])
+  (send @socket [:app/get-votes {:hello "hi"}]
+        4000
+        (fn [reply] (println "got reply" reply)))
+
+  (disconnect @socket))

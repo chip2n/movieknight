@@ -1,13 +1,13 @@
 (ns backend.core
-  (:gen-class)
   (:require [com.stuartsierra.component :as component]
-            [backend.server :as server]))
+            [backend.server :as server]
+            [backend.socket :as socket]))
 
 (defn root-system []
   (component/system-map
-   :websocket (server/create-websocket)
+   :websocket (socket/create)
    :server (component/using
-            (server/create-server 8020)
+            (server/create 8020)
             [:websocket])))
 
 (defn -main [& args]
