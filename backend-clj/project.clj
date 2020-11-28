@@ -8,6 +8,7 @@
                  [com.taoensso/sente "1.16.0"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [http-kit "2.5.0"]
+                 [com.stuartsierra/component "1.0.0"]
                  [ring/ring-anti-forgery "1.3.0"]
                  [ring-cors "0.1.13"]]
   :main ^:skip-aot backend.core
