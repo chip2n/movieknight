@@ -45,14 +45,3 @@
     (?reply-fn {:hi "hej"})
     ;; TODO use timbre
     (println "No reply fn")))
-
-
-;;;; Sente event router (our `event-msg-handler` loop)
-
-(defonce router (atom nil))
-(defn  stop-router! [] (when-let [stop-fn @router] (stop-fn)))
-(defn start-router! []
-  (stop-router!)
-  (reset! router
-    (sente/start-server-chsk-router!
-      ch-chsk event-msg-handler)))
