@@ -16,8 +16,7 @@
     (test-async
      (let [ch (chan)]
        (with-connected-client client
-         (client/send-msg client
-                          [:app/get-initial-state]
-                          1000
-                          (fn [x] (put! ch x)))
-         (is (= :yay (<! ch))))))))
+         (client/send-msg client [:app/get-initial-state] 1000 (fn [x] (put! ch x)))
+         (is (= {:users [{:id "user1" :name "User 1"} {:id "user2" :name "User 1"}]
+                 :movies [{:id "movie1" :title "Movie 1" :synopsis "Synopsis" :rating 6.9 :image-url "https://example.com/image.png"}]}
+                (<! ch))))))))

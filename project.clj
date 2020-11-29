@@ -8,6 +8,7 @@
                  [org.clojure/core.match "1.0.0"]
                  [compojure "1.6.2"]
                  [com.taoensso/sente "1.16.0"]
+                 [com.taoensso/timbre "5.1.0"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [org.postgresql/postgresql "42.2.18"]
                  [http-kit "2.5.0"]

@@ -1,4 +1,7 @@
-(ns backend.events)
+(ns backend.events
+  (:require [taoensso.timbre :as timbre]))
+
+(timbre/refer-timbre)
 
 (defmulti -event-msg-handler
   "Multimethod to handle Sente `event-msg`s"
@@ -19,7 +22,7 @@
 
     ;; TODO use timbre
     ;; (debugf "Unhandled event: %s" event)
-    (println "Unhandled event: %s" event)
+    (debugf "Unhandled event: %s" event)
     (when ?reply-fn
       (?reply-fn {:umatched-event-as-echoed-from-server event}))))
 
@@ -42,6 +45,6 @@
 (defmethod -event-msg-handler :app/get-initial-state
   [{:as ev-msg :keys [?reply-fn]}]
   (if ?reply-fn
-    (?reply-fn {:hi "hej"})
-    ;; TODO use timbre
-    (println "No reply fn")))
+    (?reply-fn {:users [{:id "user1" :name "User 1"} {:id "user2" :name "User 1"}]
+                :movies [{:id "movie1" :title "Movie 1" :synopsis "Synopsis" :rating 6.9 :image-url "https://example.com/image.png"}]})
+    (debugf "No reply fn")))
