@@ -1,4 +1,7 @@
 /target
+!/target/index.html
+!/target/style.css
+
 /classes
 /checkouts
 profiles.clj
@@ -9,5 +12,10 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 /.prepl-port
-.hgignore
 .hg/
+
+/node_modules
+/yarn.lock
+/package-lock.json
+/*.log
+.shadow-cljs/
