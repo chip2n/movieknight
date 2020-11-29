@@ -8,4 +8,7 @@
                   :dbname "movieknight"}})
 
 (comment
-  (migratus/init config))
+  (migratus/init config)
+  (migratus/migrate config)
+
+  (migratus/create config "test"))
