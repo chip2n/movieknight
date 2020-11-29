@@ -1,5 +1,7 @@
 (ns app.db
   (:require [clojure.spec.alpha :as spec]
+            [core.user :as user]
+            [core.movie :as movie]
             [re-frame.core :as rf]))
 
 (rf/reg-event-db
@@ -55,28 +57,15 @@ Based on the light novel written by Gen Urobuchi, Fate/Zero depicts the events o
 (spec/def ::session (spec/keys :req-un [:session/user-id]))
 (spec/def :session/user-id string?)
 
-(spec/def ::users (spec/coll-of ::user))
-(spec/def ::user (spec/keys :req-un [:user/id :user/name]))
-(spec/def :user/id string?)
-(spec/def :user/name string?)
+(spec/def ::users (spec/coll-of ::user/user))
 
-(spec/def ::user-votes (spec/map-of :user/id ::user-vote))
-(spec/def ::user-vote (spec/map-of :movie/id boolean?))
+(spec/def ::user-votes (spec/map-of ::user/id ::user-vote))
+(spec/def ::user-vote (spec/map-of ::movie/id boolean?))
 
-(spec/def ::suggested-movies (spec/coll-of :movie/id))
+(spec/def ::suggested-movies (spec/coll-of ::movie/id))
 
-(spec/def ::movies (spec/map-of :movie/id ::movie))
-(spec/def ::movie (spec/keys :req-un [:movie/id
-                                      :movie/title
-                                      :movie/synopsis
-                                      :movie/rating
-                                      :movie/image-url]))
-(spec/def :movie/id string?)
-(spec/def :movie/title string?)
-(spec/def :movie/synopsis string?)
-(spec/def :movie/rating float?)
-(spec/def :movie/image-url string?)
+(spec/def ::movies (spec/map-of ::movie/id ::movie/movie))
 
 (spec/def ::search-results (spec/coll-of :search/result))
-(spec/def :search/result (spec/keys :req-un [:movie/id :search/label]))
+(spec/def :search/result (spec/keys :req-un [::movie/id :search/label]))
 (spec/def :search/label string?)
