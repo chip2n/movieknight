@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS movie (
+  id BIGSERIAL PRIMARY KEY,
+  title VARCHAR,
+  synopsis VARCHAR,
+  image_url VARCHAR
+);
+--;;
+CREATE TABLE IF NOT EXISTS account (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR
+);

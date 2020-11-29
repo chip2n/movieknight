@@ -8,9 +8,16 @@
                  [org.clojure/core.match "1.0.0"]
                  [compojure "1.6.2"]
                  [com.taoensso/sente "1.16.0"]
+
+                 ;; logging
                  [com.taoensso/timbre "5.1.0"]
+                 [com.fzakaria/slf4j-timbre "0.3.20"]
+
+                 ;; database
                  [seancorfield/next.jdbc "1.1.613"]
                  [org.postgresql/postgresql "42.2.18"]
+                 [migratus "1.3.3"]
+
                  [http-kit "2.5.0"]
                  [camel-snake-kebab "0.4.2"]
                  [com.stuartsierra/component "1.0.0"]
