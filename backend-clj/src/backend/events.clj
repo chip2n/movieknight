@@ -39,7 +39,7 @@
 ;;   (let [[?uid ?csrf-token ?handshake-data] ?data]
 ;;     (->output! "Handshake: %s" ?data)))
 
-(defmethod -event-msg-handler :app/get-votes
+(defmethod -event-msg-handler :app/get-initial-state
   [{:as ev-msg :keys [?reply-fn]}]
   (if ?reply-fn
     (?reply-fn {:hi "hej"})
