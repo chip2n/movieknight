@@ -53,21 +53,18 @@
 (s/def ::movies (s/coll-of ::movie :kind vector?))
 (s/def ::movie (s/keys :req [:movie/id :movie/title :movie/synopsis :movie/image-url]))
 
-(st/select-spec ::movies [#:movie {:id 1,
-                                   :title "Test movie",
-                                   :synopsis "Synopsis",
-                                   :image-url "https://example.com/test.png"
-                                   :derp "hel"}])
-
 (defn map-keyword-ns [ns m]
   (into {} (map (fn [[k v]] [(keyword ns (name k)) v])) m))
+
+(defn get-initial-state [db]
+  (let [movies (db/get-movies db)
+        accounts (->> (db/get-accounts db)
+                      (map (partial map-keyword-ns "user"))
+                      (into []))]
+    (st/select-spec ::response {:users accounts :movies movies})))
 
 (defmethod -event-msg-handler :app/get-initial-state
   [{:keys [db ?reply-fn] :as ev-msg}]
   (if ?reply-fn
-    (let [movies (db/get-movies db)
-          accounts (->> (db/get-accounts db)
-                        (map (partial map-keyword-ns "user"))
-                        (into []))]
-      (?reply-fn {:users accounts :movies movies}))
+    (?reply-fn (get-initial-state db))
     (debugf "No reply fn")))
