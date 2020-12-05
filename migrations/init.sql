@@ -9,3 +9,10 @@ CREATE TABLE IF NOT EXISTS account (
   id BIGSERIAL PRIMARY KEY,
   name VARCHAR
 );
+--;;
+CREATE TABLE IF NOT EXISTS vote (
+  id BIGSERIAL PRIMARY KEY,
+  user_id BIGSERIAL REFERENCES account (id),
+  movie_id BIGSERIAL REFERENCES movie (id),
+  answer BOOLEAN
+);

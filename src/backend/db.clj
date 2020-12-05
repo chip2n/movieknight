@@ -11,14 +11,17 @@
     {:db-spec db-spec
      :datasource datasource}))
 
+(defn setup [{:keys [db-spec]}]
+  (migrate/init db-spec)
+  (migrate/migrate db-spec))
+
 (defrecord Database [dbname]
   component/Lifecycle
 
   (start [this]
     (println "Starting database")
-    (let [{:keys [db-spec datasource]} (create-jdbc dbname)]
-      (migrate/init db-spec)
-      (migrate/migrate db-spec)
+    (let [{:keys [db-spec datasource] :as db} (create-jdbc dbname)]
+      (setup db)
       (assoc this
              :db-spec db-spec
              :datasource datasource)))
@@ -47,6 +50,18 @@
 
 (defn get-accounts [db]
   (execute db ["SELECT * FROM account"]))
+
+(defn get-votes [db]
+  (execute db ["
+SELECT
+  vote.user_id,
+  vote.movie_id,
+  vote.answer
+FROM vote
+"]))
+
+(defn insert-vote [db {:keys [user-id movie-id answer]}]
+  (execute db ["INSERT INTO vote (user_id, movie_id, answer) VALUES (?, ?, ?)" user-id movie-id answer]))
 
 (comment
   (require '[dev :refer [db]])

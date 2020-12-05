@@ -22,6 +22,7 @@
     `(let [~dbname (format "movieknight-test-%s" (rand-str 16))
            ~db (db/create-jdbc "movieknight-test")]
        (try
+         ;; we don't need to run migrations etc since the database component already handles this
          (db/execute ~db [(format "CREATE DATABASE \"%s\"" ~dbname)])
          (let [~system (component/start (create-system ~dbname))]
            (try
