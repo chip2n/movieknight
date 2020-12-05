@@ -1,6 +1,7 @@
 (ns backend.db
   (:require [next.jdbc :as jdbc]
-            [com.stuartsierra.component :as component]))
+            [com.stuartsierra.component :as component]
+            [backend.migrations :as migrate]))
 
 ;; (def db {:dbtype "postgresql" :dbname "movieknight"})
 ;; (def ds (jdbc/get-datasource db))
@@ -12,10 +13,13 @@
 
   (start [this]
     (println "Starting database")
-    (let [db-spec {:dbtype "postgresql" :dbname dbname}]
+    (let [db-spec {:dbtype "postgresql" :dbname dbname}
+          datasource (jdbc/get-datasource db-spec)]
+      (migrate/init db-spec)
+      (migrate/migrate db-spec)
       (assoc this
              :db-spec db-spec
-             :datasource (jdbc/get-datasource db-spec))))
+             :datasource datasource)))
 
   (stop [this]
     (println "Stopping database")

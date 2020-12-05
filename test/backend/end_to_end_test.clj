@@ -24,7 +24,7 @@
 
 (defn create-system []
   (component/start
-   (system/create {:name "movieknight-test" :port port})))
+   (system/create {:dbname "movieknight-test" :port port})))
 
 (deftest end-to-end-test
   (testing "app/get-initial-state returns correct data"
