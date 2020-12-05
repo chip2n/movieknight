@@ -43,4 +43,9 @@
   (require '[dev :refer [db]])
   (insert-movie (db) {:title "Test movie" :synopsis "Synopsis" :image-url "https://example.com/test.png"})
   (insert-account (db) {:name "Andreas Arvidsson"})
-  (get-movies (db)))
+
+  (get-movies (db))
+
+  (execute (db) ["CREATE DATABASE \"test-db\""])
+  (execute (db) ["DROP DATABASE \"test-db\""])
+  )

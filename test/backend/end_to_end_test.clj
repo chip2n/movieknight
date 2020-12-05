@@ -3,8 +3,9 @@
             [clojure.core.async :refer [<! >! go chan put!]]
             [com.stuartsierra.component :as component]
             [backend.system :as system]
+            [backend.db :as db]
             [backend.client :as client]
-            [backend.test-utils :refer [test-async]]))
+            [backend.test-utils :refer :all]))
 
 (def port 8021)
 
@@ -15,12 +16,18 @@
          ~@body
          (finally (client/disconnect ~client))))))
 
-(defmacro with-system [& body]
-  (let [system (gensym "system")]
-    `(let [~system (create-system)]
+(defmacro with-system [[db] & body]
+  (let [system (gensym "system")
+        dbname (gensym "dbname")]
+    `(let [~system (create-system)
+           ~db (:database ~system)
+           ~dbname (format "movieknight-test-%s" (rand-str 16))]
        (try
+         (db/execute ~db [(format "CREATE DATABASE \"%s\"" ~dbname)])
          ~@body
-         (finally (component/stop ~system))))))
+         (finally
+           (db/execute ~db [(format "DROP DATABASE \"%s\"" ~dbname)])
+           (component/stop ~system))))))
 
 (defn create-system []
   (component/start
@@ -28,7 +35,9 @@
 
 (deftest end-to-end-test
   (testing "app/get-initial-state returns correct data"
-    (with-system
+    (with-system [db]
+      (db/insert-movie db {:title "test1" :synopsis "synopsis1" :image-url "https://example.com/test1.png"})
+      (db/insert-movie db {:title "test2" :synopsis "synopsis2" :image-url "https://example.com/test2.png"})
       (test-async
        (let [ch (chan)]
          (with-connected-client client
