@@ -3,9 +3,6 @@
             [com.stuartsierra.component :as component]
             [backend.migrations :as migrate]))
 
-;; (def db {:dbtype "postgresql" :dbname "movieknight"})
-;; (def ds (jdbc/get-datasource db))
-
 (def jdbc-opts next.jdbc/snake-kebab-opts)
 
 (defrecord Database [dbname]
