@@ -8,7 +8,7 @@
             [com.stuartsierra.component :as component]
             [compojure.core :refer [routes GET POST]]))
 
-(defrecord Server [port websocket stop-fn]
+(defrecord Server [port websocket database stop-fn]
   component/Lifecycle
 
   ;; TODO use legacy-return-value? false
@@ -33,7 +33,7 @@
         (assoc this :stop-fn stop-fn))))
 
   (stop [this]
-    (println "Stopping database")
+    (println "Stopping server")
     (stop-fn)
     (assoc this :stop-fn nil)))
 

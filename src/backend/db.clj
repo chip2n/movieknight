@@ -1,23 +1,45 @@
 (ns backend.db
-  (:require [next.jdbc :as jdbc]))
+  (:require [next.jdbc :as jdbc]
+            [com.stuartsierra.component :as component]))
 
-(def db {:dbtype "postgresql" :dbname "movieknight"})
-(def ds (jdbc/get-datasource db))
+;; (def db {:dbtype "postgresql" :dbname "movieknight"})
+;; (def ds (jdbc/get-datasource db))
 
 (def jdbc-opts next.jdbc/snake-kebab-opts)
 
-(defn insert-movie [{:keys [title synopsis image-url]}]
-  (jdbc/execute!
-   ds
-   ["INSERT INTO movie (title, synopsis, image_url) VALUES (?, ?, ?)" title synopsis image-url]
-   jdbc-opts))
+(defrecord Database [dbname]
+  component/Lifecycle
 
-(defn get-movies []
+  (start [this]
+    (println "Starting database")
+    (let [db-spec {:dbtype "postgresql" :dbname dbname}]
+      (assoc this
+             :db-spec db-spec
+             :datasource (jdbc/get-datasource db-spec))))
+
+  (stop [this]
+    (println "Stopping database")
+    (assoc this :datasource nil)))
+
+(defn create [name]
+  (map->Database {:dbname name}))
+
+(defn execute [{:keys [datasource]} query]
   (jdbc/execute!
-   ds
-   ["SELECT * FROM movie"]
-   jdbc-opts))
+   datasource
+   query))
+
+(defn insert-movie [db {:keys [title synopsis image-url]}]
+  (execute db ["INSERT INTO movie (title, synopsis, image_url) VALUES (?, ?, ?)" title synopsis image-url]))
+
+(defn insert-account [db {:keys [name]}]
+  (execute db ["INSERT INTO account (name) VALUES (?)" name]))
+
+(defn get-movies [db]
+  (execute db ["SELECT * FROM movie"]))
 
 (comment
-  (insert-movie {:title "Test movie" :synopsis "Synopsis" :image-url "https://example.com/test.png"})
-  (get-movies))
+  (require '[dev :refer [db]])
+  (insert-movie (db) {:title "Test movie" :synopsis "Synopsis" :image-url "https://example.com/test.png"})
+  (insert-account (db) {:name "Andreas Arvidsson"})
+  (get-movies (db)))
