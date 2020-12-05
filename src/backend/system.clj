@@ -4,10 +4,12 @@
             [backend.server :as server]
             [backend.socket :as socket]))
 
-(defn create []
-  (component/system-map
-   :websocket (socket/create)
-   :database (db/create "movieknight")
-   :server (component/using
-            (server/create 8020)
-            [:websocket :database])))
+(defn create
+  ([] (create {}))
+  ([{:keys [dbname port] :or {dbname "movieknight" port 8020}}]
+   (component/system-map
+    :websocket (socket/create)
+    :database (db/create dbname)
+    :server (component/using
+             (server/create port)
+             [:websocket :database]))))
