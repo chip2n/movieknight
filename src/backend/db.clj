@@ -28,7 +28,8 @@
 (defn execute [{:keys [datasource]} query]
   (jdbc/execute!
    datasource
-   query))
+   query
+   jdbc-opts))
 
 (defn insert-movie [db {:keys [title synopsis image-url]}]
   (execute db ["INSERT INTO movie (title, synopsis, image_url) VALUES (?, ?, ?)" title synopsis image-url]))
