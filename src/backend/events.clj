@@ -1,5 +1,9 @@
 (ns backend.events
-  (:require [taoensso.timbre :as timbre]))
+  (:require [taoensso.timbre :as timbre]
+            [backend.db :as db]
+            [core.movie :as movie]
+            [clojure.spec.alpha :as s]
+            [spec-tools.core :as st]))
 
 (timbre/refer-timbre)
 
@@ -9,14 +13,14 @@
 
 (defn event-msg-handler
   "Wraps `-event-msg-handler` with logging, error catching, etc."
-  [{:as ev-msg :keys [id ?data event]}]
-  (-event-msg-handler ev-msg) ; Handle event-msgs on a single thread
+  [db {:keys [id ?data event] :as ev-msg}]
+  (-event-msg-handler (assoc ev-msg :db db)) ; Handle event-msgs on a single thread
   ;; (future (-event-msg-handler ev-msg)) ; Handle event-msgs on a thread pool
   )
 
 (defmethod -event-msg-handler
   :default ; Default/fallback case (no other matching handler)
-  [{:as ev-msg :keys [event id ?data ring-req ?reply-fn send-fn]}]
+  [{:keys [event id ?data ring-req ?reply-fn send-fn] :as ev-msg}]
   (let [session (:session ring-req)
         uid     (:uid     session)]
 
@@ -42,9 +46,28 @@
 ;;   (let [[?uid ?csrf-token ?handshake-data] ?data]
 ;;     (->output! "Handshake: %s" ?data)))
 
+
+(s/def ::response (s/keys :req-un [::users ::movies]))
+(s/def ::users (s/coll-of ::user :kind vector?))
+(s/def ::user (s/keys :req [:user/id :user/name]))
+(s/def ::movies (s/coll-of ::movie :kind vector?))
+(s/def ::movie (s/keys :req [:movie/id :movie/title :movie/synopsis :movie/image-url]))
+
+(st/select-spec ::movies [#:movie {:id 1,
+                                   :title "Test movie",
+                                   :synopsis "Synopsis",
+                                   :image-url "https://example.com/test.png"
+                                   :derp "hel"}])
+
+(defn map-keyword-ns [ns m]
+  (into {} (map (fn [[k v]] [(keyword ns (name k)) v])) m))
+
 (defmethod -event-msg-handler :app/get-initial-state
-  [{:as ev-msg :keys [?reply-fn]}]
+  [{:keys [db ?reply-fn] :as ev-msg}]
   (if ?reply-fn
-    (?reply-fn {:users [{:id "user1" :name "User 1"} {:id "user2" :name "User 1"}]
-                :movies [{:id "movie1" :title "Movie 1" :synopsis "Synopsis" :rating 6.9 :image-url "https://example.com/image.png"}]})
+    (let [movies (db/get-movies db)
+          accounts (->> (db/get-accounts db)
+                        (map (partial map-keyword-ns "user"))
+                        (into []))]
+      (?reply-fn {:users accounts :movies movies}))
     (debugf "No reply fn")))

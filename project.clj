@@ -18,6 +18,8 @@
                  [org.postgresql/postgresql "42.2.18"]
                  [migratus "1.3.3"]
 
+                 [metosin/spec-tools "0.10.4"]
+
                  [http-kit "2.5.0"]
                  [camel-snake-kebab "0.4.2"]
                  [com.stuartsierra/component "1.0.0"]

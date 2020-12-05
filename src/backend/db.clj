@@ -5,13 +5,18 @@
 
 (def jdbc-opts next.jdbc/snake-kebab-opts)
 
+(defn create-jdbc [dbname]
+  (let [db-spec {:dbtype "postgresql" :dbname dbname}
+        datasource (jdbc/get-datasource db-spec)]
+    {:db-spec db-spec
+     :datasource datasource}))
+
 (defrecord Database [dbname]
   component/Lifecycle
 
   (start [this]
     (println "Starting database")
-    (let [db-spec {:dbtype "postgresql" :dbname dbname}
-          datasource (jdbc/get-datasource db-spec)]
+    (let [{:keys [db-spec datasource]} (create-jdbc dbname)]
       (migrate/init db-spec)
       (migrate/migrate db-spec)
       (assoc this
@@ -39,6 +44,9 @@
 
 (defn get-movies [db]
   (execute db ["SELECT * FROM movie"]))
+
+(defn get-accounts [db]
+  (execute db ["SELECT * FROM account"]))
 
 (comment
   (require '[dev :refer [db]])

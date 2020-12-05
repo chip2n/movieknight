@@ -19,29 +19,39 @@
 (defmacro with-system [[db] & body]
   (let [system (gensym "system")
         dbname (gensym "dbname")]
-    `(let [~system (create-system)
-           ~db (:database ~system)
-           ~dbname (format "movieknight-test-%s" (rand-str 16))]
+    `(let [~dbname (format "movieknight-test-%s" (rand-str 16))
+           ~db (db/create-jdbc "movieknight-test")]
        (try
          (db/execute ~db [(format "CREATE DATABASE \"%s\"" ~dbname)])
-         ~@body
+         (let [~system (component/start (create-system ~dbname))]
+           (try
+             (let [~db (:database ~system)]
+               ~@body)
+             (finally
+               (println ~system)
+               (component/stop ~system))))
          (finally
-           (db/execute ~db [(format "DROP DATABASE \"%s\"" ~dbname)])
-           (component/stop ~system))))))
+           (println "dropping" ~dbname)
+           (db/execute ~db [(format "DROP DATABASE \"%s\"" ~dbname)]))))))
 
-(defn create-system []
-  (component/start
-   (system/create {:dbname "movieknight-test" :port port})))
+(defn create-system [dbname]
+  (system/create {:dbname dbname :port port}))
 
 (deftest end-to-end-test
   (testing "app/get-initial-state returns correct data"
     (with-system [db]
-      (db/insert-movie db {:title "test1" :synopsis "synopsis1" :image-url "https://example.com/test1.png"})
-      (db/insert-movie db {:title "test2" :synopsis "synopsis2" :image-url "https://example.com/test2.png"})
-      (test-async
-       (let [ch (chan)]
-         (with-connected-client client
-           (client/send-msg client [:app/get-initial-state] 1000 (fn [x] (put! ch x)))
-           (is (= {:users [{:id "user1" :name "User 1"} {:id "user2" :name "User 1"}]
-                   :movies [{:id "movie1" :title "Movie 1" :synopsis "Synopsis" :rating 6.9 :image-url "https://example.com/image.png"}]}
-                  (<! ch)))))))))
+      (let [user1 #:user{:id 1 :name "user1"}
+            user2 #:user{:id 2 :name "user2"}
+            movie1 #:movie{:id 1 :title "test1" :synopsis "synopsis1" :image-url "https://example.com/test1.png"}
+            movie2 #:movie{:id 2 :title "test2" :synopsis "synopsis2" :image-url "https://example.com/test2.png"}]
+        (db/insert-account db {:name (:user/name user1)})
+        (db/insert-account db {:name (:user/name user2)})
+        (db/insert-movie db {:title (:movie/title movie1) :synopsis (:movie/synopsis movie1) :image-url (:movie/image-url movie1)})
+        (db/insert-movie db {:title (:movie/title movie2) :synopsis (:movie/synopsis movie2) :image-url (:movie/image-url movie2)})
+        (test-async
+         (let [ch (chan)]
+           (with-connected-client client
+             (client/send-msg client [:app/get-initial-state] 1000 (fn [x] (put! ch x)))
+             (is (= {:users [user1 user2]
+                     :movies [movie1 movie2]}
+                    (<! ch))))))))))
