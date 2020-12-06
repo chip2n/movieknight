@@ -58,13 +58,16 @@
 (defn map-keyword-ns [ns m]
   (into {} (map (fn [[k v]] [(keyword ns (name k)) v])) m))
 
+(s/fdef get-initial-state
+  :args (s/cat :db not-empty)
+  :ret ::response)
+
 (defn get-initial-state [db]
   (let [movies (db/get-movies db)
         accounts (->> (db/get-accounts db)
                       (map (partial map-keyword-ns "user"))
                       (into []))
         votes (db/get-votes db)]
-    (println votes)
     (st/select-spec
      ::response
      {:users accounts

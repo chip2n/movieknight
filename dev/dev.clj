@@ -1,6 +1,7 @@
 (ns dev
   (:require [backend.system :as system]
             [clojure.spec.alpha :as s]
+            [orchestra.spec.test :as stest]
             [com.stuartsierra.component.repl :refer [set-init system]]))
 
 (defn db [] (:database system))

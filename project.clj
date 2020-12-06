@@ -25,7 +25,8 @@
                  [com.stuartsierra/component "1.0.0"]
                  [com.stuartsierra/component.repl "0.2.0"]
                  [ring/ring-anti-forgery "1.3.0"]
-                 [ring-cors "0.1.13"]]
+                 [ring-cors "0.1.13"]
+                 [orchestra "2020.09.18-1"]]
   :main ^:skip-aot backend.core
   :target-path "target/%s"
   :repl-options {:init-ns user}
