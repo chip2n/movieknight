@@ -8,7 +8,6 @@
  (fn [db [_ {:keys [id answer]}]]
    (let [current-user (get-in db [:session :user-id])]
      (-> db
-         (update :vote-prompts #(into [] (remove #{id} %)))
          (assoc-in [:user-votes current-user id] answer)))))
 
 (rf/reg-event-fx
