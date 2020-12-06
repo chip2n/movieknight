@@ -47,11 +47,13 @@
 ;;     (->output! "Handshake: %s" ?data)))
 
 
-(s/def ::response (s/keys :req-un [::users ::movies]))
+(s/def ::response (s/keys :req-un [::users ::movies ::votes]))
 (s/def ::users (s/coll-of ::user :kind vector?))
 (s/def ::user (s/keys :req [:user/id :user/name]))
 (s/def ::movies (s/coll-of ::movie :kind vector?))
 (s/def ::movie (s/keys :req [:movie/id :movie/title :movie/synopsis :movie/image-url]))
+(s/def ::votes (s/coll-of ::vote :kind vector?))
+(s/def ::vote (s/keys :req [:vote/user-id :vote/movie-id :vote/answer]))
 
 (defn map-keyword-ns [ns m]
   (into {} (map (fn [[k v]] [(keyword ns (name k)) v])) m))
@@ -60,8 +62,14 @@
   (let [movies (db/get-movies db)
         accounts (->> (db/get-accounts db)
                       (map (partial map-keyword-ns "user"))
-                      (into []))]
-    (st/select-spec ::response {:users accounts :movies movies})))
+                      (into []))
+        votes (db/get-votes db)]
+    (println votes)
+    (st/select-spec
+     ::response
+     {:users accounts
+      :movies movies
+      :votes votes})))
 
 (defmethod -event-msg-handler :app/get-initial-state
   [{:keys [db ?reply-fn] :as ev-msg}]
