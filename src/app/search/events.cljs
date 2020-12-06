@@ -14,8 +14,8 @@
  :set-search-results
  (fn [db [_ results]]
    (-> db
-       (update-in [:movies] merge (into {} (map (fn [x] [(:id x) x]) results)))
-       (assoc :search-results (map (fn [x] {:id (:id x) :label (:title x)}) results)))))
+       (update-in [:movies] merge (into {} (map (fn [x] [(:movie/id x) x]) results)))
+       (assoc :search-results (map (fn [x] {:id (:movie/id x) :label (:movie/title x)}) results)))))
 
 ;; TODO debounce
 (rf/reg-fx

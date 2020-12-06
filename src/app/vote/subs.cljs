@@ -35,8 +35,8 @@
       :movies
       (->> movies
            (filter (fn [[id m]] (some (partial = id) suggested-movies)))
-           (map (fn [[id m]] (concat [(:title m)]
-                                     (map #(get-in votes [(:id %) id]) users))))
+           (map (fn [[id m]] (concat [(:movie/title m)]
+                                     (map #(get-in votes [(:user/id %) id]) users))))
            (sort-vote-list))})))
 
 (rf/reg-sub

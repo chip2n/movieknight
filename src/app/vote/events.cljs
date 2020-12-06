@@ -6,15 +6,17 @@
  :vote
  [(utils/validate-db)]
  (fn [db [_ {:keys [id answer]}]]
-   (-> db
-       (update :vote-prompts #(into [] (remove #{id} %)))
-       (assoc-in [:user-votes "andreas" id] answer))))
+   (let [current-user (get-in db [:session :user-id])]
+     (-> db
+         (update :vote-prompts #(into [] (remove #{id} %)))
+         (assoc-in [:user-votes current-user id] answer)))))
 
 (rf/reg-event-fx
  :suggest-movie
  [(utils/validate-db)]
  (fn [{:keys [db]} [_ id]]
-   {:db (-> db
-            (update :suggested-movies #(conj % id))
-            (assoc-in [:user-votes "andreas" id] true))
-    :dispatch [:set-search-results []]}))
+   (let [current-user (get-in db [:session :user-id])]
+     {:db (-> db
+              (update :suggested-movies #(conj % id))
+              (assoc-in [:user-votes current-user id] true))
+      :dispatch [:set-search-results []]})))

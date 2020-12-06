@@ -21,16 +21,16 @@
        [:tr
         [:td]
         (for [user (:users data)]
-          ^{:key (:id user)}
+          ^{:key (str "user-" (:user/id user))}
           [:td {:style {:font-weight :bold
                         :text-align :center}}
-           (as-> (:name user) n
+           (as-> (:user/name user) n
              (clojure.string/split n " ")
              (map first n)
              (clojure.string/join n))])]
 
        (for [movie (:movies data)]
-         ^{:key (first movie)}
+         ^{:key (str "row-" (first movie))}
          [:tr
           [:td
            {:style {:width 200
@@ -40,7 +40,7 @@
               ^{:key (str (first movie) "-" i)}
             [vote user-vote])])])]])
 
-(defn movie-watch-question [{:keys [id title synopsis rating image-url]}]
+(defn movie-watch-question [{:keys [movie/id movie/title movie/synopsis movie/rating movie/image-url]}]
   (let [width 300]
     [:div {:style {:width width}}
      [:div.movie-question-caption "Do you want to watch"]
