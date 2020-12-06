@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS account (
 );
 --;;
 CREATE TABLE IF NOT EXISTS vote (
-  id BIGSERIAL PRIMARY KEY,
+  PRIMARY KEY(user_id, movie_id),
   user_id BIGSERIAL REFERENCES account (id),
   movie_id BIGSERIAL REFERENCES movie (id),
   answer BOOLEAN
