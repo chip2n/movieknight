@@ -1,6 +1,6 @@
 (ns app.socket
   (:require-macros
-   [cljs.core.async.macros :as asyncm :refer (go go-loop)])
+   [cljs.core.async.macros :refer (go go-loop)])
   (:require
    [cljs.core.async :as async :refer (<! >! put! chan)]
    [taoensso.sente :as sente :refer (cb-success?)]))
