@@ -4,7 +4,7 @@
             [com.stuartsierra.component :as component]
             [backend.system :as system]
             [backend.db :as db]
-            [backend.client :as client]
+            [core.client :as client]
             [backend.test-utils :refer :all]))
 
 (defmacro with-db [[db] & body]

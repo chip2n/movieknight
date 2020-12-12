@@ -1,7 +1,11 @@
-(ns backend.client
-  (:require [taoensso.sente :as sente]
-            [clojure.core.async :as async]
-            [clojure.core.match :refer [match]]))
+(ns core.client
+  (:require
+   [taoensso.sente :as sente]
+   #?(:clj [clojure.core.async :as async]
+      :cljs [clojure.core.async :as async])
+   #?(:clj [clojure.core.match :refer [match]]
+      :cljs [cljs.core.match :refer-macros [match]])))
+
 
 ;; TODO can we share this code with cljs app?
 

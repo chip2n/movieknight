@@ -1,11 +1,11 @@
 (ns backend.end-to-end-test
-  (:require [clojure.test :refer :all]
-            [clojure.core.async :refer [<! >! go chan put!]]
-            [com.stuartsierra.component :as component]
+  (:require [backend.db :as db]
             [backend.system :as system]
-            [backend.db :as db]
-            [backend.client :as client]
-            [backend.test-utils :refer :all]))
+            [backend.test-utils :refer :all]
+            [clojure.core.async :refer [<! chan go put!]]
+            [clojure.test :refer :all]
+            [com.stuartsierra.component :as component]
+            [core.client :as client]))
 
 (def port 8021)
 
