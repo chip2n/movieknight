@@ -2,8 +2,8 @@
   (:require [migratus.core :as migratus]))
 
 (def base-config {:store :database
-             :migration-dir "migrations/"
-             :init-script "init.sql"})
+                  :migration-dir "migrations/"
+                  :init-script "init.sql"})
 
 (defn init [db-spec]
   (migratus/init (assoc base-config :db db-spec)))
@@ -12,7 +12,8 @@
   (migratus/migrate (assoc base-config :db db-spec)))
 
 (comment
-  (migratus/init config)
-  (migratus/migrate config)
+  (require '[dev :refer [db]])
+
+  (init (:db-spec (db)))
 
   (migratus/create config "test"))

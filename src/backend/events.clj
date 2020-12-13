@@ -51,7 +51,7 @@
 (s/def ::users (s/coll-of ::user :kind vector?))
 (s/def ::user (s/keys :req [:user/id :user/name]))
 (s/def ::movies (s/coll-of ::movie :kind vector?))
-(s/def ::movie (s/keys :req [:movie/id :movie/title :movie/synopsis :movie/image-url]))
+(s/def ::movie (s/keys :req [:movie/id :movie/title :movie/synopsis :movie/rating :movie/image-url]))
 (s/def ::votes (s/coll-of ::vote :kind vector?))
 (s/def ::vote (s/keys :req [:vote/user-id :vote/movie-id :vote/answer]))
 

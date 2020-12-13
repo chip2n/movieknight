@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS movie (
   id BIGSERIAL PRIMARY KEY,
   title VARCHAR,
   synopsis VARCHAR,
+  rating NUMERIC(3, 2),
   image_url VARCHAR
 );
 --;;
