@@ -4,42 +4,41 @@
             [core.movie :as movie]
             [re-frame.core :as rf]))
 
-(rf/reg-event-db
- :init-db
- (fn [_ _]
-   {:session {:user-id 1}
-    :users [#:user{:id 1 :name "Andreas Arvidsson"}
-            #:user{:id 2 :name "Henning Phan"}
-            #:user{:id 3 :name "Sebastian Lagerman"}
-            #:user{:id 4 :name "Henrik Nyström"}
-            #:user{:id 5 :name "Joppe Widstam"}]
-    :user-votes {1 {1 true 3 true}
-                 2 {1 true 2 false 3 false}
-                 3 {1 true 2 true 3 true 4 false}
-                 4 {1 true 2 true 3 false 4 false}
-                 5 {1 true 2 true 3 false 4 true}}
-    :suggested-movies [1 2 3 4]
-    :movies {1 #:movie{:id 1
-                       :title "Vinland Saga"
-                       :synopsis "Synopsis"
-                       :rating 7.3
-                       :image-url "https://cdn.myanimelist.net/images/anime/1500/103005l.webp"}
-             2 #:movie{:id 2
-                       :title "Fate/Zero"
-                       :synopsis "Synopsis"
-                       :rating 7.5
-                       :image-url "https://cdn.myanimelist.net/images/anime/2/73249l.webp"}
-             3 #:movie{:id 3
-                       :title "One Piece"
-                       :synopsis "Synopsis"
-                       :rating 7.5
-                       :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
-             4 #:movie{:id 4
-                       :title "Naruto Shippuden"
-                       :synopsis "Synopsis"
-                       :rating 7.5
-                       :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
-    :search-results []}))
+(def initial-db
+  {:session {:user-id 1}
+   :backend-conn nil
+   :users [#:user{:id 1 :name "Andreas Arvidsson"}
+           #:user{:id 2 :name "Henning Phan"}
+           #:user{:id 3 :name "Sebastian Lagerman"}
+           #:user{:id 4 :name "Henrik Nyström"}
+           #:user{:id 5 :name "Joppe Widstam"}]
+   :user-votes {1 {1 true 3 true}
+                2 {1 true 2 false 3 false}
+                3 {1 true 2 true 3 true 4 false}
+                4 {1 true 2 true 3 false 4 false}
+                5 {1 true 2 true 3 false 4 true}}
+   :suggested-movies [1 2 3 4]
+   :movies {1 #:movie{:id 1
+                      :title "Vinland Saga"
+                      :synopsis "Synopsis"
+                      :rating 7.3
+                      :image-url "https://cdn.myanimelist.net/images/anime/1500/103005l.webp"}
+            2 #:movie{:id 2
+                      :title "Fate/Zero"
+                      :synopsis "Synopsis"
+                      :rating 7.5
+                      :image-url "https://cdn.myanimelist.net/images/anime/2/73249l.webp"}
+            3 #:movie{:id 3
+                      :title "One Piece"
+                      :synopsis "Synopsis"
+                      :rating 7.5
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}
+            4 #:movie{:id 4
+                      :title "Naruto Shippuden"
+                      :synopsis "Synopsis"
+                      :rating 7.5
+                      :image-url "https://cdn.myanimelist.net/images/anime/3/67177l.jpg"}}
+   :search-results []})
 
 (spec/def ::app-state (spec/keys :req-un [::session
                                           ::users
