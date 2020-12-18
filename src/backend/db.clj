@@ -39,10 +39,10 @@
    query
    jdbc-opts))
 
-(defn insert-movie [db {:keys [title synopsis rating image-url]}]
+(defn insert-movie [db {:keys [movie/title movie/synopsis movie/rating movie/image-url]}]
   (execute db ["INSERT INTO movie (title, synopsis, rating, image_url) VALUES (?, ?, ?, ?)" title synopsis rating image-url]))
 
-(defn insert-account [db {:keys [name]}]
+(defn insert-account [db {:keys [user/name]}]
   (execute db ["INSERT INTO account (name) VALUES (?)" name]))
 
 ;; TODO can we make this more efficient?
@@ -62,7 +62,9 @@ SELECT
 FROM vote
 "]))
 
-(defn insert-vote [db {:keys [user-id movie-id answer]}]
+(defn insert-vote [db {:keys [vote/user-id vote/movie-id vote/answer]}]
+  (println "resntreintiersnteirnetisn" answer)
+  (assert (not (nil? answer)))
   (execute db ["INSERT INTO vote (user_id, movie_id, answer) VALUES (?, ?, ?)" user-id movie-id answer]))
 
 (comment

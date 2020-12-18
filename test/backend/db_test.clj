@@ -26,8 +26,8 @@
       (is (= [] (db/get-votes db)))))
   (testing "non-empty"
     (with-db [db]
-      (db/insert-account db {:name "user1"})
-      (db/insert-movie db {:title "movie1" :synopsis "synopsis1" :image-url "https://example.com/test1.png"})
-      (db/insert-vote db {:user-id 1 :movie-id 1 :answer true})
+      (db/insert-account db #:user{:name "user1"})
+      (db/insert-movie db #:movie{:title "movie1" :synopsis "synopsis1" :image-url "https://example.com/test1.png"})
+      (db/insert-vote db #:vote{:user-id 1 :movie-id 1 :answer true})
       (is (= [#:vote{:user-id 1 :movie-id 1 :answer true}]
              (db/get-votes db))))))
